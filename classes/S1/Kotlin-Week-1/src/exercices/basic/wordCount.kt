@@ -1,7 +1,7 @@
 package exercices.basic
 
 fun wordCount(sentences: List<String>): List<Int> {
-    return sentences.flatMap { it.split(' ').map {it} }.map { it.count() }
+    return sentences.map { it.split(' ').count()}
 }
 
 fun main() {
@@ -17,5 +17,6 @@ fun main() {
         "Kotlin supports functional programming.",
         "Learning Kotlin can improve code readability."
     )
+
     println(wordCount(sentences))
 }
