@@ -133,11 +133,13 @@ fun TriviaSparksTheme(
     content:   @Composable () -> Unit,
 ) {
     val colorScheme  = if (darkTheme) DarkColorScheme       else LightColorScheme
-    val customColors = if (darkTheme) DarkDreamscapeColors  else LightDreamscapeColors
+    val customColors = if (darkTheme) DarkTriviaSparksColors  else LightTriviaSparksColors
+    val dimens = TriviaSparksDimens()
 
     CompositionLocalProvider(
         LocalTriviaSparksColors provides customColors,
         LocalTriviaSparksDifficulty provides TriviaSparksDifficulty,
+        LocalTriviaSparksDimens provides dimens
     ) {
         MaterialTheme(
             colorScheme = colorScheme,
@@ -157,7 +159,7 @@ fun TriviaSparksTheme(
  * val warnColor   = MaterialTheme.triviaSparks.warning
  * val topSurface  = MaterialTheme.triviaSparks.surfaceHighest
  */
-val MaterialTheme.triviaSparks: DreamscapeColors
+val MaterialTheme.triviaSparks: TriviaSparksColors
     @Composable @ReadOnlyComposable
     get() = LocalTriviaSparksColors.current
 
@@ -170,3 +172,8 @@ val MaterialTheme.triviaSparks: DreamscapeColors
 val MaterialTheme.difficulty: DifficultyColors
     @Composable @ReadOnlyComposable
     get() = LocalTriviaSparksDifficulty.current
+
+val MaterialTheme.dimens: TriviaSparksDimens
+    @Composable
+    @ReadOnlyComposable
+    get() = LocalTriviaSparksDimens.current

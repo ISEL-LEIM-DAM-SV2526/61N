@@ -170,7 +170,7 @@ private val OnPrimaryContainerGlow = Violet200.copy(alpha = 0.08f)
 
 // ── Spacing tokens (named) ────────────────────────────────────────────
 
-object DreamscapeSpacing {
+object TriviaSparksSpacing {
     val cardPadding    : Dp = 24.dp   // minimum internal card padding
     val optionGap      : Dp = 12.dp   // vertical gap between answer options (no dividers)
     val heroSection    : Dp = 68.dp   // breathing room for hero / score sections (≈8.5rem)
@@ -181,3 +181,5 @@ object DreamscapeSpacing {
 
 val LocalTriviaSparksColors = staticCompositionLocalOf { DarkTriviaSparksColors }
 val LocalTriviaSparksDifficulty = staticCompositionLocalOf { TriviaSparksDifficulty }
+
+val LocalTriviaSparksDimens = staticCompositionLocalOf { TriviaSparksDimens() }
