@@ -2,11 +2,6 @@
 
 > Android development with Jetpack Compose — building a real production-quality app from the ground up across 12 weeks.
 
-![Kotlin](https://img.shields.io/badge/Kotlin-2.0-7c6af7?style=flat&logo=kotlin&logoColor=white)
-![Jetpack Compose](https://img.shields.io/badge/Jetpack%20Compose-2024.10-6ecfb0?style=flat&logo=android&logoColor=white)
-![ISEL](https://img.shields.io/badge/ISEL-DAM%202525-ff8c69?style=flat)
-![License](https://img.shields.io/badge/License-Academic-ffd166?style=flat)
-
 ---
 
 ## Goals
@@ -28,7 +23,7 @@ Along the way students will be able to:
 ## Repository Structure
 
 ```
-dam-2525/
+61N/
 │
 ├── app/                        ← Trivia Sparks — the course project
 │   └── See app/README.md for setup instructions and architecture overview
@@ -45,10 +40,10 @@ dam-2525/
 
 ### `app/` — Trivia Sparks
 
-The main course project. A real-time multiplayer quiz app built progressively across all 12 weeks. Each week adds a new layer — from static UI in Week 2 to full Firebase multiplayer in Week 11.
+The main course project. A real-time multiplayer quiz app - Trivia Sparks. 
 
 → **[app/README.md](./app/README.md)** — setup instructions, architecture overview, and design system  
-→ **[Course Wiki](../../wiki)** — detailed week-by-week guides, KDoc standards, troubleshooting, and glossary
+→ **[Course Wiki](../../wiki)** — detailed week-by-week guides, KDoc standards, etc
 
 ### `classes/` — Weekly Materials
 
@@ -56,11 +51,11 @@ Everything written or discussed in class lives here, organised by week. Each wee
 
 | Folder | Contents |
 |---|---|
-| `exercises/` | Kotlin and Compose exercises completed during the session |
-| `challenges/` | Take-home challenges to submit before the next class |
+| `exercises/` | Kotlin and Android exercises completed during the session |
+| `challenges/` | Take-home challenges |
 | `snippets/` | Self-contained code snippets that illustrate concepts from the presentations |
 
-> Code in `classes/` is intentionally simplified — it demonstrates individual concepts in isolation. The production-quality implementation of the same concepts lives in `app/`.
+> Code in `classes/` is intentionally simplified - it demonstrates individual concepts in isolation. The production-quality implementation of the same concepts lives in `app/`.
 
 ---
 
@@ -241,7 +236,7 @@ Open the `app/` folder in Android Studio and wait for Gradle sync.
 ---
 
 <div align="center">
-  DAM 2525 · ISEL · 2025/2026
+  DAM · LEIM61N · ISEL · 2025/2026
 </div>
 
 
