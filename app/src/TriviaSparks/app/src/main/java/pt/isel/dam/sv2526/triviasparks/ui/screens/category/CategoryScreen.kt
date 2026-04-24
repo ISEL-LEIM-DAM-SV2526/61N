@@ -31,6 +31,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import pt.isel.dam.sv2526.triviasparks.R
+import pt.isel.dam.sv2526.triviasparks.ui.component.AppSearchBar
 import pt.isel.dam.sv2526.triviasparks.ui.model.Category
 import pt.isel.dam.sv2526.triviasparks.ui.model.DifficultyOption
 import pt.isel.dam.sv2526.triviasparks.ui.component.DifficultyChip
@@ -41,6 +42,7 @@ import pt.isel.dam.sv2526.triviasparks.ui.theme.ComponentSize
 import pt.isel.dam.sv2526.triviasparks.ui.theme.IconSize
 import pt.isel.dam.sv2526.triviasparks.ui.theme.SearchBarShape
 import pt.isel.dam.sv2526.triviasparks.ui.theme.Spacing
+import pt.isel.dam.sv2526.triviasparks.ui.theme.TriviaSparksRadius.SearchBar
 import pt.isel.dam.sv2526.triviasparks.ui.theme.TriviaSparksTheme
 import pt.isel.dam.sv2526.triviasparks.ui.theme.Violet800
 import pt.isel.dam.sv2526.triviasparks.ui.theme.triviasparks
@@ -131,7 +133,10 @@ fun CategoryScreen(
 
                 // ── Search bar ─────────────────────────────────────────────
                 item {
-                    CategorySearchBar(
+                    AppSearchBar(
+                        value = "",
+                        onValueChange = {},
+                        placeholder = "Search Placeholder",
                         modifier = Modifier.padding(
                             horizontal = Spacing.screenEdge,
                             vertical   = Spacing.sm
@@ -300,73 +305,6 @@ private fun DifficultySection(
             }
         }
     }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// SEARCH BAR
-// ─────────────────────────────────────────────────────────────────────────────
-
-/**
- * Pill-shaped search input for filtering categories by name.
- *
- * This week the field is **static** — `value` is always empty and
- * `onValueChange` does nothing. The field renders and focuses correctly
- * but typing has no visible effect.
- *
- * In Week 3 this becomes connected to real state at the call site:
- * ```kotlin
- * // Week 3 — in CategoryScreen
- * var searchQuery by remember { mutableStateOf("") }
- * val filteredCategories by remember {
- *     derivedStateOf {
- *         if (searchQuery.isBlank()) categories
- *         else categories.filter { it.name.contains(searchQuery, ignoreCase = true) }
- *     }
- * }
- * CategorySearchBar(value = searchQuery, onValueChange = { searchQuery = it })
- * ```
- * The composable signature will also gain `value` and `onValueChange` parameters —
- * the internal layout does not change.
- *
- * Uses [SearchBarShape] (99dp pill) and a transparent unfocused border so it
- * looks like a filled pill at rest rather than a text field with an outline.
- *
- * TODO(Week 3): add `value: String` and `onValueChange: (String) -> Unit` parameters.
- *
- * @param modifier  Applied to the [OutlinedTextField] element.
- */
-@Composable
-private fun CategorySearchBar(
-    modifier: Modifier = Modifier
-) {
-    OutlinedTextField(
-        value         = "",         // TODO(Week 3): mutableStateOf searchQuery
-        onValueChange = { },        // TODO(Week 3): { searchQuery = it }
-        placeholder   = {
-            Text(
-                text  = "Search categories...",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        },
-        leadingIcon = {
-            Icon(
-                painter            = painterResource(R.drawable.ic_search),
-                contentDescription = null,
-                tint               = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier           = Modifier.size(IconSize.sm)   // 20dp
-            )
-        },
-        singleLine = true,
-        modifier   = modifier.fillMaxWidth(),
-        shape      = SearchBarShape,   // 99dp pill
-        colors     = OutlinedTextFieldDefaults.colors(
-            unfocusedBorderColor    = Color.Transparent,               // invisible at rest
-            focusedBorderColor      = MaterialTheme.colorScheme.primary,
-            unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-            focusedContainerColor   = MaterialTheme.colorScheme.surface
-        )
-    )
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

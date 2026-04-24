@@ -318,7 +318,7 @@ private val DarkExtendedColors = TriviaSparksThemeExtendedColors(
 // ─────────────────────────────────────────────────────────────────────────────
 
 /** Internal holder for extended colours. Do not access directly — use [MaterialTheme.triviasparks]. */
-val LocalTriviaSparksColors = staticCompositionLocalOf { LightExtendedColors }
+internal val LocalTriviaSparksColors = staticCompositionLocalOf { LightExtendedColors }
 
 // ─────────────────────────────────────────────────────────────────────────────
 // THEME ENTRY POINT

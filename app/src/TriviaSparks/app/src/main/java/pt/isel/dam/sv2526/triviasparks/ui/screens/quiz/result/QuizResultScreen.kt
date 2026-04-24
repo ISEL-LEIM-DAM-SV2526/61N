@@ -448,7 +448,7 @@ private fun ResultsStatsRow(
 }
 
 // StatBox is a shared component — lives in ui/components/StatBox.kt
-// Imported above: import pt.isel.dam.sv2526.triviasparksgame.ui.components.StatBox
+// Imported above: import pt.isel.dam.sv2526.triviasparks.ui.component.StatBox
 
 // ─────────────────────────────────────────────────────────────────────────────
 // QUESTION REVIEW ITEM
@@ -496,7 +496,7 @@ private fun QuestionReviewItem(
             Icon(
                 painter = painterResource(
                     if (question.isCorrect) R.drawable.ic_check
-                    else R.drawable.ic_close
+                    else R.drawable.ic_cross
                 ),
                 contentDescription = if (question.isCorrect) "Correct" else "Wrong",
                 tint = badgeColour,
