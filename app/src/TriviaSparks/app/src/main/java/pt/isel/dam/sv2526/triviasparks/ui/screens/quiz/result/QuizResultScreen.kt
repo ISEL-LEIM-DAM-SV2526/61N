@@ -314,24 +314,6 @@ private fun ResultsHero(
     }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// RESULTS CARD
-// ─────────────────────────────────────────────────────────────────────────────
-
-/**
- * White card containing the stats row and the scrollable question review list.
- *
- * Uses [BottomSheetShape] (top 20dp corners, 0dp bottom) — same pattern as
- * [QuizDetailScreen]. The caller applies a negative top padding equal to
- * [ResultsDefaults.cardOverlap] to create the visual overlap with the hero.
- *
- * The card uses `LazyColumn` internally for the review list — the stats row
- * and divider sit above as `item { }` blocks.
- *
- * @param summary    Score summary for the stats row.
- * @param questions  Ordered list of question review entries.
- * @param modifier   Applied to the outermost [Surface] element.
- */
 @Composable
 private fun ResultsCard(
     summary: QuizResultSummary,

@@ -22,7 +22,7 @@ import androidx.compose.ui.graphics.Color
  * https://www.figma.com/design/JLQCo8SrXd27RnUmIhQ4CS/Trivia-Sparks-Game?node-id=35-1773&t=Tqzagesq6ztbVvp0-1
  *
  * Wiki — Colour:
- * https://github.com/ISEL-LEIM-DAM-SV2526/61N/wiki/00-%E2%80%90-TriviaSparks-Game#spacing--spacingkt
+ * https://github.com/ISEL-LEIM-DAM-SV2526/61N/wiki/00-%E2%80%90-TriviaSparks-Game#colours--colorkt
  *
  */
 

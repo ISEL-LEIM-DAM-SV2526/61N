@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
  *   object (`CardShape`, `ChipShape`, etc.)
  *
  * Wiki — shape token reference:
- * https://github.com/ISEL-LEIM-DAM-SV2526/61N/wiki/00-%E2%80%90-TriviaSparks-Game#spacing--spacingkt
+ * https://github.com/ISEL-LEIM-DAM-SV2526/61N/wiki/00-%E2%80%90-TriviaSparks-Game#shapes--shapekt
  *
  * Figma — shape tokens:
  * https://www.figma.com/design/JLQCo8SrXd27RnUmIhQ4CS/Trivia-Sparks-Game?node-id=35-1773&t=Tqzagesq6ztbVvp0-1
