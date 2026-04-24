@@ -1,0 +1,459 @@
+package pt.isel.dam.sv2526.triviasparks.ui.screens.category
+
+import android.content.res.Configuration
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import pt.isel.dam.sv2526.triviasparks.R
+import pt.isel.dam.sv2526.triviasparks.ui.model.Category
+import pt.isel.dam.sv2526.triviasparks.ui.model.DifficultyOption
+import pt.isel.dam.sv2526.triviasparks.ui.component.DifficultyChip
+import pt.isel.dam.sv2526.triviasparks.ui.component.ListItemCard
+import pt.isel.dam.sv2526.triviasparks.ui.preview.sampleCategories
+import pt.isel.dam.sv2526.triviasparks.ui.theme.ButtonShape
+import pt.isel.dam.sv2526.triviasparks.ui.theme.ComponentSize
+import pt.isel.dam.sv2526.triviasparks.ui.theme.IconSize
+import pt.isel.dam.sv2526.triviasparks.ui.theme.SearchBarShape
+import pt.isel.dam.sv2526.triviasparks.ui.theme.Spacing
+import pt.isel.dam.sv2526.triviasparks.ui.theme.TriviaSparksTheme
+import pt.isel.dam.sv2526.triviasparks.ui.theme.Violet800
+import pt.isel.dam.sv2526.triviasparks.ui.theme.triviasparks
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CATEGORY SCREEN
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Quiz Setup screen — the player selects a difficulty and a category before starting.
+ *
+ * Layout pattern: [Scaffold] → [Column] → [LazyColumn] (`weight(1f)`) + [StartQuizButton].
+ * The button is pinned outside the scroll so it is always visible regardless of list length.
+ *
+ * **What is static this week and when it becomes live:**
+ *
+ * | Element | Static value | Becomes live |
+ * |---|---|---|
+ * | `categories` | `sampleCategories` mock | Week 6 — Open Trivia Database API |
+ * | `selectedDifficulty` | `"Easy"` hardcoded | Week 3 — `mutableStateOf` hoisted here |
+ * | Search bar | empty `value`, no-op `onValueChange` | Week 3 — `derivedStateOf` filter |
+ * | `onClose` | empty lambda | Week 4 — `NavController.popBackStack()` |
+ * | `onCategoryClick` | empty lambda | Week 4 — navigate to `QuizDetailScreen` |
+ * | `onStartQuiz` | empty lambda | Week 4 — navigate to `QuizScreen` with args |
+ *
+ * Figma design:
+ * https://www.figma.com/file/your-figma-link/Trivia-Sparks?node-id=category-screen
+ *
+ * Wiki — Week 2 CategoryScreen section:
+ * https://github.com/your-username/trivia-sparks/wiki/Week-2#categoryscreen
+ *
+ * @param categories          List of categories to display.
+ * @param selectedDifficulty  Currently selected difficulty label.
+ *                            TODO(Week 3): becomes `remember { mutableStateOf("Easy") }` here.
+ * @param onClose             Called when the user taps the X button.
+ *                            TODO(Week 4): `NavController.popBackStack()`.
+ * @param onCategoryClick     Called when the user taps a category row. Receives the category ID.
+ *                            TODO(Week 4): navigate to `QuizDetailScreen`.
+ * @param onStartQuiz         Called when the user taps Start Quiz.
+ *                            TODO(Week 4): navigate to `QuizScreen` with selected category + difficulty.
+ */
+@Composable
+fun CategoryScreen(
+    categories: List<Category>     = sampleCategories,  // TODO(Week 6): Open Trivia Database API
+    selectedDifficulty: String     = "Easy",             // TODO(Week 3): mutableStateOf hoisted here
+    onClose: () -> Unit            = {},                 // TODO(Week 4): NavController.popBackStack()
+    onCategoryClick: (Int) -> Unit = {},                 // TODO(Week 4): navigate to QuizDetailScreen
+    onStartQuiz: () -> Unit        = {}                  // TODO(Week 4): navigate to QuizScreen with args
+) {
+    Scaffold(
+        containerColor = MaterialTheme.colorScheme.background
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+        ) {
+            // Scrollable content — weight(1f) takes all space above the sticky button
+            LazyColumn(
+                modifier       = Modifier.weight(1f),
+                contentPadding = PaddingValues(bottom = Spacing.lg)
+            ) {
+
+                // ── Top bar ────────────────────────────────────────────────
+                item {
+                    CategoryTopBar(onClose = onClose)
+                }
+
+                // ── Difficulty selector ────────────────────────────────────
+                item {
+                    DifficultySection(
+                        selectedDifficulty = selectedDifficulty,
+                        modifier           = Modifier.padding(
+                            horizontal = Spacing.screenEdge,
+                            vertical   = Spacing.xl
+                        )
+                    )
+                }
+
+                // ── "CATEGORIES" section label ─────────────────────────────
+                item {
+                    Text(
+                        text     = "CATEGORIES",
+                        style    = MaterialTheme.typography.labelSmall,
+                        color    = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(
+                            horizontal = Spacing.screenEdge,
+                            vertical   = Spacing.sm
+                        )
+                    )
+                }
+
+                // ── Search bar ─────────────────────────────────────────────
+                item {
+                    CategorySearchBar(
+                        modifier = Modifier.padding(
+                            horizontal = Spacing.screenEdge,
+                            vertical   = Spacing.sm
+                        )
+                    )
+                }
+
+                item { Spacer(modifier = Modifier.height(Spacing.sm)) }
+
+                // ── Category rows ──────────────────────────────────────────
+                // TODO(Week 3): pass filteredCategories (derivedStateOf) instead of categories
+                // TODO(Week 6): replace sampleCategories with API data from ViewModel
+                items(
+                    items = categories,
+                    key   = { it.id }   // stable key — always required on items()
+                ) { category ->
+                    ListItemCard(
+                        title    = category.name,
+                        subtitle = "${category.questionCount} Questions", // question count as subtitle
+                        iconRes  = category.iconRes,
+                        iconTint = category.iconTint,
+                        onClick  = { onCategoryClick(category.id) },
+                        modifier = Modifier.padding(
+                            horizontal = Spacing.screenEdge,
+                            vertical   = Spacing.xs
+                        )
+                    )
+                }
+            }
+
+            // ── Start Quiz — pinned below the scroll ───────────────────────
+            StartQuizButton(
+                onClick  = onStartQuiz,
+                modifier = Modifier.padding(
+                    horizontal = Spacing.screenEdge,
+                    vertical   = Spacing.xl
+                )
+            )
+        }
+    }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// TOP BAR
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Custom top bar — X close button left, "Quiz Setup" title right.
+ *
+ * Uses a plain [Row] instead of [androidx.compose.material3.TopAppBar].
+ * An X button is used instead of a back arrow because this screen has
+ * modal semantics — the user is configuring a session, not navigating a linear flow.
+ *
+ * The [IconButton] uses [ComponentSize.close] (28.5dp) for the touch target.
+ * The icon itself uses [IconSize.xxs] (13dp) to keep the X visually small
+ * relative to the title — matching the Figma design.
+ *
+ * Figma: https://www.figma.com/file/your-figma-link/Trivia-Sparks?node-id=category-top-bar
+ *
+ * @param onClose   Called when the user taps the X button.
+ *                  TODO(Week 4): `NavController.popBackStack()`.
+ * @param modifier  Applied to the outermost [Row] element.
+ */
+@Composable
+private fun CategoryTopBar(
+    onClose: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier          = modifier
+            .fillMaxWidth()
+            .padding(horizontal = Spacing.screenEdge)
+            .padding(top = Spacing.xl, bottom = Spacing.sm),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        IconButton(
+            onClick  = onClose,
+            modifier = Modifier.size(ComponentSize.close)  // 28.5dp touch target
+        ) {
+            Icon(
+                painter            = painterResource(R.drawable.ic_close),
+                contentDescription = "Close",
+                tint               = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier           = Modifier.size(IconSize.xxs)  // 13dp — small X
+            )
+        }
+
+        Spacer(modifier = Modifier.width(Spacing.sm))
+
+        Text(
+            text       = "Quiz Setup",
+            style      = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.Bold,
+            color      = MaterialTheme.colorScheme.primary
+        )
+    }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// DIFFICULTY SECTION
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * "DIFFICULTY" label and three [DifficultyChip]s in a full-width [Row].
+ *
+ * Only one chip is active at a time, determined by [selectedDifficulty].
+ * Each chip gets [Modifier.weight(1f)] so all three share equal width.
+ *
+ * The [DifficultyOption] list is built here from extended Dreamscape tokens —
+ * each option carries both the base colour (icon + border) and the `onLightColour`
+ * variant (label text — WCAG AA on white surfaces).
+ *
+ * This week [selectedDifficulty] is a hardcoded parameter — chips render their
+ * selected/unselected state correctly but tapping does nothing.
+ * TODO(Week 3): hoisted `mutableStateOf("Easy")` here and `onClick` connected.
+ *
+ * Wiki — difficulty chip colour rules:
+ * https://github.com/your-username/trivia-sparks/wiki/Week-2#difficulty-chips--three-values-per-chip
+ *
+ * @param selectedDifficulty  Label of the currently active chip — "Easy", "Medium", or "Hard".
+ * @param modifier            Applied to the outermost [Column] element.
+ */
+@Composable
+private fun DifficultySection(
+    selectedDifficulty: String,
+    modifier: Modifier = Modifier
+) {
+    val ext = MaterialTheme.triviasparks
+
+    val difficultyOptions = listOf(
+        DifficultyOption(
+            label         = "Easy",
+            iconRes       = R.drawable.ic_star_fill,
+            colour        = ext.easy,
+            onLightColour = ext.easyOnLight
+        ),
+        DifficultyOption(
+            label         = "Medium",
+            iconRes       = R.drawable.ic_light,
+            colour        = ext.medium,
+            onLightColour = ext.mediumOnLight   // #B8922A — never white on yellow
+        ),
+        DifficultyOption(
+            label         = "Hard",
+            iconRes       = R.drawable.ic_flame,
+            colour        = ext.hard,
+            onLightColour = ext.hardOnLight
+        )
+    )
+
+    Column(
+        modifier            = modifier,
+        verticalArrangement = Arrangement.spacedBy(Spacing.md)
+    ) {
+        Text(
+            text  = "DIFFICULTY",
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+
+        Row(
+            modifier              = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(Spacing.md)
+        ) {
+            difficultyOptions.forEach { option ->
+                DifficultyChip(
+                    option     = option,
+                    isSelected = option.label == selectedDifficulty,
+                    onClick    = { /* TODO(Week 3): selectedDifficulty = option.label */ },
+                    modifier   = Modifier.weight(1f)
+                )
+            }
+        }
+    }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SEARCH BAR
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Pill-shaped search input for filtering categories by name.
+ *
+ * This week the field is **static** — `value` is always empty and
+ * `onValueChange` does nothing. The field renders and focuses correctly
+ * but typing has no visible effect.
+ *
+ * In Week 3 this becomes connected to real state at the call site:
+ * ```kotlin
+ * // Week 3 — in CategoryScreen
+ * var searchQuery by remember { mutableStateOf("") }
+ * val filteredCategories by remember {
+ *     derivedStateOf {
+ *         if (searchQuery.isBlank()) categories
+ *         else categories.filter { it.name.contains(searchQuery, ignoreCase = true) }
+ *     }
+ * }
+ * CategorySearchBar(value = searchQuery, onValueChange = { searchQuery = it })
+ * ```
+ * The composable signature will also gain `value` and `onValueChange` parameters —
+ * the internal layout does not change.
+ *
+ * Uses [SearchBarShape] (99dp pill) and a transparent unfocused border so it
+ * looks like a filled pill at rest rather than a text field with an outline.
+ *
+ * TODO(Week 3): add `value: String` and `onValueChange: (String) -> Unit` parameters.
+ *
+ * @param modifier  Applied to the [OutlinedTextField] element.
+ */
+@Composable
+private fun CategorySearchBar(
+    modifier: Modifier = Modifier
+) {
+    OutlinedTextField(
+        value         = "",         // TODO(Week 3): mutableStateOf searchQuery
+        onValueChange = { },        // TODO(Week 3): { searchQuery = it }
+        placeholder   = {
+            Text(
+                text  = "Search categories...",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        },
+        leadingIcon = {
+            Icon(
+                painter            = painterResource(R.drawable.ic_search),
+                contentDescription = null,
+                tint               = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier           = Modifier.size(IconSize.sm)   // 20dp
+            )
+        },
+        singleLine = true,
+        modifier   = modifier.fillMaxWidth(),
+        shape      = SearchBarShape,   // 99dp pill
+        colors     = OutlinedTextFieldDefaults.colors(
+            unfocusedBorderColor    = Color.Transparent,               // invisible at rest
+            focusedBorderColor      = MaterialTheme.colorScheme.primary,
+            unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+            focusedContainerColor   = MaterialTheme.colorScheme.surface
+        )
+    )
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// START QUIZ BUTTON
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Full-width CTA pinned to the bottom of the screen.
+ *
+ * Uses [Violet800] (`#3C3489`) instead of `colorScheme.primary` (`#8B7FE8`).
+ * The deeper violet creates stronger contrast against the `background` token —
+ * signalling this is the final committed action on the screen.
+ *
+ * Figma: https://www.figma.com/file/your-figma-link/Trivia-Sparks?node-id=start-quiz-button
+ *
+ * @param onClick   Called when the user taps the button.
+ *                  TODO(Week 4): navigate to `QuizScreen` with selected category ID and difficulty.
+ * @param modifier  Applied to the outermost [Button] element.
+ */
+@Composable
+private fun StartQuizButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Button(
+        onClick  = onClick,
+        modifier = modifier
+            .fillMaxWidth()
+            .height(ComponentSize.buttonHeightLarge),  // 56dp
+        shape  = ButtonShape,
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Violet800,      // deeper than primary — strong final CTA
+            contentColor   = Color.White
+        )
+    ) {
+        Icon(
+            painter            = painterResource(R.drawable.ic_play),
+            contentDescription = null,
+            modifier           = Modifier.size(IconSize.sm)   // 20dp
+        )
+        Spacer(modifier = Modifier.width(Spacing.sm))
+        Text(
+            text       = "Start Quiz",
+            style      = MaterialTheme.typography.labelLarge,
+            fontWeight = FontWeight.Bold
+        )
+    }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// PREVIEWS
+// ─────────────────────────────────────────────────────────────────────────────
+
+@Preview(showBackground = true, name = "CategoryScreen — light, Easy selected")
+@Composable
+private fun CategoryScreenLightPreview() {
+    TriviaSparksTheme(darkTheme = false) {
+        CategoryScreen()
+    }
+}
+
+@Preview(
+    showBackground = true,
+    name           = "CategoryScreen — dark, Easy selected",
+    uiMode         = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun CategoryScreenDarkPreview() {
+    TriviaSparksTheme(darkTheme = true) {
+        CategoryScreen()
+    }
+}
+
+@Preview(showBackground = true, name = "CategoryScreen — Medium selected")
+@Composable
+private fun CategoryScreenMediumSelectedPreview() {
+    TriviaSparksTheme(darkTheme = false) {
+        CategoryScreen(selectedDifficulty = "Medium")
+    }
+}

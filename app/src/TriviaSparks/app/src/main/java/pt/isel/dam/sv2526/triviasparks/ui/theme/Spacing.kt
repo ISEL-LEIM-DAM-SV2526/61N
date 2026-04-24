@@ -109,6 +109,7 @@ object Elevation {
 // ─────────────────────────────────────────────────────────────────────────────
 
 object IconSize {
+    val xxxs  = 8.dp  // inline icons inside result stats
     val xxs  = 13.dp  // close button icon, back arrow inside ghost overlay
     val xs   = 16.dp  // inline icons inside chips and info pills
     val sm   = 20.dp  // button icons (rocket, play, people), stat pill icons
@@ -160,4 +161,8 @@ object ComponentSize {
 
     // ── Utility ───────────────────────────────────────────────────────────
     val close = 28.5.dp  // close button touch target size
+
+    // ── Result  ───────────────────────────────────────────────────────────
+    val resultHeroHeight = 280.dp  // violet hero area on ResultsScreen
+    val reviewBadge      = 28.dp   // check/X circle on question review items
 }
