@@ -1,4 +1,4 @@
-package pt.isel.dam.sv2526.triviasparks.domain.model
+package pt.isel.dam.sv2526.triviasparks.ui.model
 import androidx.compose.ui.graphics.Color
 
 /**

@@ -1,4 +1,4 @@
-package pt.isel.dam.sv2526.triviasparks.domain.model
+package pt.isel.dam.sv2526.triviasparks.ui.model
 
 /**
  * Represents a friend entry displayed in the Recent Friends horizontal row.

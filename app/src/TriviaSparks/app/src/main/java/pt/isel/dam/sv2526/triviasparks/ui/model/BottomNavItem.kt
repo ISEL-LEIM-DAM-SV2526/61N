@@ -1,4 +1,4 @@
-package pt.isel.dam.sv2526.triviasparks.ui.screens.model
+package pt.isel.dam.sv2526.triviasparks.ui.model
 
 /**
  * Navigation destination for the bottom navigation bar.

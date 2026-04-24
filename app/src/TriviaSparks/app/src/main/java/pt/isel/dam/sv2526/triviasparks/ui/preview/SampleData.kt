@@ -1,11 +1,13 @@
 package pt.isel.dam.sv2526.triviasparks.ui.preview
-import pt.isel.dam.sv2526.triviasparks.ui.screens.model.AnswerOption
-import pt.isel.dam.sv2526.triviasparks.ui.screens.model.BottomNavItem
+import pt.isel.dam.sv2526.triviasparks.ui.model.AnswerOption
 import androidx.compose.ui.graphics.Color
 import pt.isel.dam.sv2526.triviasparks.R
-import pt.isel.dam.sv2526.triviasparks.domain.model.Category
-import pt.isel.dam.sv2526.triviasparks.domain.model.Friend
-import pt.isel.dam.sv2526.triviasparks.domain.model.QuizItem
+import pt.isel.dam.sv2526.triviasparks.ui.model.Category
+import pt.isel.dam.sv2526.triviasparks.ui.model.Friend
+import pt.isel.dam.sv2526.triviasparks.ui.model.BottomNavItem
+import pt.isel.dam.sv2526.triviasparks.ui.model.QuestionReview
+import pt.isel.dam.sv2526.triviasparks.ui.model.QuizItem
+import pt.isel.dam.sv2526.triviasparks.ui.model.QuizResultSummary
 
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -44,7 +46,7 @@ val sampleCategories = listOf(
 // Replaced by ViewModel + Repository in Week 5.
 // ─────────────────────────────────────────────────────────────────────────────
 
-val quizItems = listOf(
+val sampleQuizItems = listOf(
     QuizItem("id1", "Science", "15 Questions • Advanced", R.drawable.ic_science, Color(0xFF4A90D9)),
     QuizItem("id2", "Sports", "15 Questions • Hard", R.drawable.ic_sports, Color(0xFFFF8C69)),
     QuizItem("id3", "Art", "15 Questions • Easy", R.drawable.ic_art, Color(0xFFFF6B8A)),
@@ -55,9 +57,9 @@ val quizItems = listOf(
 
 val bottomNavItems = listOf(
     BottomNavItem(
-        route             = "home",
-        label             = "HOME",
-        iconSelectedRes   = R.drawable.ic_home_seleted,
+        route = "home",
+        label = "HOME",
+        iconSelectedRes = R.drawable.ic_home_seleted,
         iconUnselectedRes = R.drawable.ic_home_seleted
     ),
     BottomNavItem(
@@ -86,4 +88,22 @@ val sampleAnswers = listOf(
     AnswerOption("B", "Crab Nebula"),
     AnswerOption("C", "Eagle Nebula"),
     AnswerOption("D", "Helix Nebula")
+)
+
+
+val sampleSummary = QuizResultSummary(
+    totalScore       = 2450,
+    scorePercentage  = 85,
+    correctCount     = 17,
+    wrongCount       = 3,
+    timeTakenSeconds = 84   // 1:24
+)
+
+val sampleReview = listOf(
+    QuestionReview(1, "What is the capital city of France?",
+        "Paris", "Paris", isCorrect = true),
+    QuestionReview(2, "Which planet is known as the Red Planet?",
+        "Venus", "Mars", isCorrect = false),
+    QuestionReview(3, "Who painted the Mona Lisa?",
+        "Leonardo da Vinci", "Leonardo da Vinci", isCorrect = true)
 )
