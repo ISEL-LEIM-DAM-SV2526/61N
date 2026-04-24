@@ -2,12 +2,10 @@ package pt.isel.dam.sv2526.triviasparks.ui.screens.quiz.result
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -44,7 +42,6 @@ import pt.isel.dam.sv2526.triviasparks.ui.preview.sampleReview
 import pt.isel.dam.sv2526.triviasparks.ui.preview.sampleSummary
 import pt.isel.dam.sv2526.triviasparks.ui.theme.BottomSheetShape
 import pt.isel.dam.sv2526.triviasparks.ui.theme.ButtonShape
-import pt.isel.dam.sv2526.triviasparks.ui.theme.CardShape
 import pt.isel.dam.sv2526.triviasparks.ui.theme.ComponentSize
 import pt.isel.dam.sv2526.triviasparks.ui.theme.IconSize
 import pt.isel.dam.sv2526.triviasparks.ui.theme.Spacing
@@ -576,10 +573,10 @@ private fun TryAgainButton(
         onClick = onClick,     // TODO(Week 4): navigate to QuizScreen
         modifier = modifier
             .fillMaxWidth()
-            .height(ComponentSize.buttonHeightLarge),  // 56dp
+            .height(ComponentSize.buttonHeightLarge),
         shape = ButtonShape,
         colors = ButtonDefaults.buttonColors(
-            containerColor = Violet800,   // deeper than primary — strong CTA
+            containerColor = Violet800,
             contentColor = Color.White
         )
     ) {
