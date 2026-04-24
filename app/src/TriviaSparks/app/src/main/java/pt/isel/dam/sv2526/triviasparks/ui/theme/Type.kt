@@ -30,14 +30,12 @@ import pt.isel.dam.sv2526.triviasparks.R
  * **Rule:** never set `fontSize` directly in a composable.
  * Always use `style = MaterialTheme.typography.*` to pick the right scale step.
  *
- * Wiki — typography scale reference:
- * https://github.com/your-username/trivia-sparks/wiki/App-Trivia-Sparks#typography
+ * Wiki — typography:
+ * https://github.com/ISEL-LEIM-DAM-SV2526/61N/wiki/00-%E2%80%90-TriviaSparks-Game#typography--typekt
  *
- * Wiki — typography applied to each screen:
- * https://github.com/your-username/trivia-sparks/wiki/Week-2#typography-applied-to-screens
  *
  * Figma — typography tokens:
- * https://www.figma.com/file/your-figma-link/Trivia-Sparks?node-id=design-system-typography
+ * https://www.figma.com/design/JLQCo8SrXd27RnUmIhQ4CS/Trivia-Sparks-Game?node-id=35-1773&t=Tqzagesq6ztbVvp0-1
  */
 
 // ─────────────────────────────────────────────────────────────────────────────

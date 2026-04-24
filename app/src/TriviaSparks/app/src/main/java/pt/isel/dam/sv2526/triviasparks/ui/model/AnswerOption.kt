@@ -7,7 +7,7 @@ package pt.isel.dam.sv2526.triviasparks.ui.model
  * from the domain [Question] model (correctAnswer + incorrectAnswers shuffled).
  *
  * Wiki — data models reference:
- * https://github.com/your-username/trivia-sparks/wiki/App-Trivia-Sparks#data-models
+ * https://github.com/ISEL-LEIM-DAM-SV2526/61N/wiki/00-%E2%80%90-TriviaSparks-Game#data-models
  */
 data class AnswerOption(
     val letter: String,  // "A" | "B" | "C" | "D" — derived from index in production

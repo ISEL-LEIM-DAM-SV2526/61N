@@ -9,7 +9,7 @@ import androidx.compose.ui.graphics.Color
  * In Week 6 it will be replaced by the domain Quiz model from the Open Trivia API.
  *
  * Wiki — data models reference:
- * https://github.com/your-username/trivia-sparks/wiki/App-Trivia-Sparks#data-models
+ * https://github.com/ISEL-LEIM-DAM-SV2526/61N/wiki/00-%E2%80%90-TriviaSparks-Game#data-models
  */
 data class QuizItem(
     val id: String,         // Quiz id, e.g "1919191"

@@ -10,7 +10,7 @@ import androidx.compose.ui.graphics.Color
  * particularly important for [mediumOnLight] since yellow (#FFD166) fails contrast on white.
  *
  * Wiki — difficulty colour tokens:
- * https://github.com/your-username/trivia-sparks/wiki/App-Trivia-Sparks#design-system--dreamscape
+ * https://github.com/ISEL-LEIM-DAM-SV2526/61N/wiki/00-%E2%80%90-TriviaSparks-Game#difficulty--semantic
  */
 data class DifficultyOption(
     val label: String,        // "Easy" | "Medium" | "Hard"

@@ -59,13 +59,11 @@ import pt.isel.dam.sv2526.triviasparks.ui.theme.TriviaSparksTheme
  * Marked `internal` — only accessible within this module.
  * Move to `public` if reused across modules in a multi-module project.
  *
- * Figma: https://www.figma.com/file/your-figma-link/Trivia-Sparks?node-id=list-item-card
+ * Figma: https://www.figma.com/design/JLQCo8SrXd27RnUmIhQ4CS/Trivia-Sparks-Game?node-id=35-1773&t=Tqzagesq6ztbVvp0-1
  *
  * Wiki — shared components:
- * https://github.com/your-username/trivia-sparks/wiki/Week-2#shared-components-created-this-week
+ * https://github.com/ISEL-LEIM-DAM-SV2526/61N/wiki/02-%E2%80%90-Jetpack-Compose-%E2%80%90-Compose-Fundamentals#shared-components-created-this-week
  *
- * Wiki — icon container pattern:
- * https://github.com/your-username/trivia-sparks/wiki/Week-2#category-icon-containers
  *
  * @param title     Primary text shown in [MaterialTheme.typography.titleMedium] SemiBold.
  *                  Truncated to one line with ellipsis if too long.

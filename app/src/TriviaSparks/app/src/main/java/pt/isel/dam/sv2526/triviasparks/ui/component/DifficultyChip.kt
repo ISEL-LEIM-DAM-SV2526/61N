@@ -64,10 +64,10 @@ import pt.isel.dam.sv2526.triviasparks.ui.theme.triviasparks
  *
  * Marked `internal` — only accessible within this module.
  *
- * Figma: https://www.figma.com/file/your-figma-link/Trivia-Sparks?node-id=difficulty-chip
+ * Figma: https://www.figma.com/design/JLQCo8SrXd27RnUmIhQ4CS/Trivia-Sparks-Game?node-id=35-1773&t=Tqzagesq6ztbVvp0-1
  *
- * Wiki — difficulty chip colour rules:
- * https://github.com/your-username/trivia-sparks/wiki/Week-2#difficulty-chips--three-values-per-chip
+ * Wiki
+ * https://github.com/ISEL-LEIM-DAM-SV2526/61N/wiki/02-%E2%80%90-Jetpack-Compose-%E2%80%90-Compose-Fundamentals#shared-components-created-this-week
  *
  * @param option      The difficulty configuration — label, icon resource, and colour variants.
  *                    Use the values from [MaterialTheme.triviasparks] to build this.

@@ -74,10 +74,10 @@ import pt.isel.dam.sv2526.triviasparks.ui.theme.TriviaSparksTheme
  * Uncomment and replace `R.drawable.ic_check` with your actual drawable ID
  * to enable it. The logic (`isSelected && isCorrect`) is already correct.
  *
- * Figma: https://www.figma.com/file/your-figma-link/Trivia-Sparks?node-id=answer-option-card
+ * Figma: https://www.figma.com/design/JLQCo8SrXd27RnUmIhQ4CS/Trivia-Sparks-Game?node-id=49-5469&t=Tqzagesq6ztbVvp0-1
  *
- * Wiki — answer option animation explained:
- * https://github.com/your-username/trivia-sparks/wiki/Week-2#answer-option-cards--visual-states
+ * Wiki:
+ * https://github.com/ISEL-LEIM-DAM-SV2526/61N/wiki/02-%E2%80%90-Jetpack-Compose-%E2%80%90-Compose-Fundamentals#quizscreen
  *
  * @param answer        The answer option data — letter ("A"/"B"/"C"/"D") and text.
  * @param isSelected    True when this option is the one the user tapped.

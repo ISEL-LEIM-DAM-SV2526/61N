@@ -7,7 +7,7 @@ package pt.isel.dam.sv2526.triviasparks.ui.model
  * In Week 9 it will be replaced by the domain model populated from Firestore.
  *
  * Wiki — data models reference:
- * https://github.com/your-username/trivia-sparks/wiki/App-Trivia-Sparks#data-models
+ * https://github.com/ISEL-LEIM-DAM-SV2526/61N/wiki/00-%E2%80%90-TriviaSparks-Game#data-models
  */
 data class Friend(
     val name: String,       // Display name shown below the avatar

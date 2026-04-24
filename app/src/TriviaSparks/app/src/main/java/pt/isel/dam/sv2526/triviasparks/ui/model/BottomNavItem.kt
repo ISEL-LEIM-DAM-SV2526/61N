@@ -7,8 +7,6 @@ package pt.isel.dam.sv2526.triviasparks.ui.model
  * the unselected state. This follows the Material3 convention: filled icons for
  * active tabs, outlined icons for inactive tabs.
  *
- * Wiki — NavigationBar icon convention:
- * https://github.com/your-username/trivia-sparks/wiki/Week-2#navigationbar
  */
 data class BottomNavItem(
     val route: String,            // Navigation route string — wired to NavController in Week 4

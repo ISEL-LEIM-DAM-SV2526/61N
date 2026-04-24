@@ -59,13 +59,11 @@ import pt.isel.dam.sv2526.triviasparks.ui.theme.TriviaSparksTheme
  *
  * Marked `internal` — only accessible within this module.
  *
- * Figma: https://www.figma.com/file/your-figma-link/Trivia-Sparks?node-id=avatar-card
+ * Figma: https://www.figma.com/design/JLQCo8SrXd27RnUmIhQ4CS/Trivia-Sparks-Game?node-id=35-1773&t=Tqzagesq6ztbVvp0-1
  *
  * Wiki — shared components:
- * https://github.com/your-username/trivia-sparks/wiki/Week-2#shared-components-created-this-week
+ * https://github.com/ISEL-LEIM-DAM-SV2526/61N/wiki/02-%E2%80%90-Jetpack-Compose-%E2%80%90-Compose-Fundamentals#shared-components-created-this-week
  *
- * Wiki — clip before background rule:
- * https://github.com/your-username/trivia-sparks/wiki/Week-2#concepts-applied-here
  *
  * @param image     Drawable resource ID for the avatar image. Clipped to [AvatarShape] (circle).
  * @param title     Primary label — typically a person's display name.

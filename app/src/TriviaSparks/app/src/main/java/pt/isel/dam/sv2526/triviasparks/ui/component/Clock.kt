@@ -131,10 +131,10 @@ private object TimerDefaults {
  * AnimatedTimerRing(timeLeft = timeLeft, totalTime = 30)
  * ```
  *
- * Figma: https://www.figma.com/file/your-figma-link/Trivia-Sparks?node-id=timer-ring
+ * Figma: https://www.figma.com/design/JLQCo8SrXd27RnUmIhQ4CS/Trivia-Sparks-Game?node-id=35-1773&t=Tqzagesq6ztbVvp0-1
  *
  * Wiki — timer animations explained:
- * https://github.com/your-username/trivia-sparks/wiki/Week-2#quizscreen
+ * https://github.com/ISEL-LEIM-DAM-SV2526/61N/wiki/02-%E2%80%90-Jetpack-Compose-%E2%80%90-Compose-Fundamentals#quizscreen
  *
  * @param timeLeft   Seconds remaining. Range: 0 → [totalTime]. Drives all four animations.
  * @param totalTime  Total seconds per question — used to compute the progress ratio.

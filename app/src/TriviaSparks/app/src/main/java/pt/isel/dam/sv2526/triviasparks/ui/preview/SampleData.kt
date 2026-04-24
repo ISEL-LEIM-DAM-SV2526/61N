@@ -6,6 +6,7 @@ import pt.isel.dam.sv2526.triviasparks.ui.model.Category
 import pt.isel.dam.sv2526.triviasparks.ui.model.Friend
 import pt.isel.dam.sv2526.triviasparks.ui.model.BottomNavItem
 import pt.isel.dam.sv2526.triviasparks.ui.model.QuestionReview
+import pt.isel.dam.sv2526.triviasparks.ui.model.QuizDetail
 import pt.isel.dam.sv2526.triviasparks.ui.model.QuizItem
 import pt.isel.dam.sv2526.triviasparks.ui.model.QuizResultSummary
 
@@ -80,6 +81,18 @@ val bottomNavItems = listOf(
         iconSelectedRes = R.drawable.ic_profile_unselected,
         iconUnselectedRes = R.drawable.ic_profile_unselected
     )
+)
+
+val sampleQuizDetail = QuizDetail(
+    id = 1,
+    title = "Quantum Physics Fun",
+    category = "SCIENCE & NATURE",
+    questionCount = 15,
+    xpReward = 250,
+    description = "Dive into the fascinating world of quantum mechanics! " +
+            "Explore particles, waves, and the mysteries of the " +
+            "subatomic world in this playful challenge.",
+    difficulty = "Easy"
 )
 
 

@@ -6,7 +6,7 @@ package pt.isel.dam.sv2526.triviasparks.ui.model
  * Temporary UI model — replaced by the domain [QuizResult] model in Week 5.
  *
  * Wiki — data models reference:
- * https://github.com/your-username/trivia-sparks/wiki/App-Trivia-Sparks#data-models
+ * https://github.com/ISEL-LEIM-DAM-SV2526/61N/wiki/00-%E2%80%90-TriviaSparks-Game#data-models
  */
 data class QuizResultSummary(
     val totalScore: Int,           // Raw score, e.g. 2450

@@ -42,6 +42,8 @@ import pt.isel.dam.sv2526.triviasparks.R
 import pt.isel.dam.sv2526.triviasparks.ui.model.DifficultyOption
 import pt.isel.dam.sv2526.triviasparks.ui.component.DifficultyChip
 import pt.isel.dam.sv2526.triviasparks.ui.component.InfoPill
+import pt.isel.dam.sv2526.triviasparks.ui.model.QuizDetail
+import pt.isel.dam.sv2526.triviasparks.ui.preview.sampleQuizDetail
 import pt.isel.dam.sv2526.triviasparks.ui.theme.BottomSheetShape
 import pt.isel.dam.sv2526.triviasparks.ui.theme.ButtonShape
 import pt.isel.dam.sv2526.triviasparks.ui.theme.ChipShape
@@ -51,59 +53,6 @@ import pt.isel.dam.sv2526.triviasparks.ui.theme.Spacing
 import pt.isel.dam.sv2526.triviasparks.ui.theme.TriviaSparksTheme
 import pt.isel.dam.sv2526.triviasparks.ui.theme.Violet800
 import pt.isel.dam.sv2526.triviasparks.ui.theme.triviasparks
-
-// ─────────────────────────────────────────────────────────────────────────────
-// SCREEN-LEVEL CONSTANTS
-// Magic numbers extracted here — change once, updates everywhere in the file.
-// ─────────────────────────────────────────────────────────────────────────────
-
-private object QuizDetailDefaults {
-    val heroHeight      = 240.dp  // full-bleed illustration area at the top
-    val heroCardOverlap = 20.dp   // negative y-offset — card slides up over the hero
-    val backButtonSize  = 40.dp   // ghost back button touch target in the hero
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// DATA MODEL
-// Temporary — moved to domain/model/ in Week 5 when ViewModel is introduced.
-// Wiki: https://github.com/your-username/trivia-sparks/wiki/Week-5
-// ─────────────────────────────────────────────────────────────────────────────
-
-/**
- * Represents the full detail of a quiz shown on [QuizDetailScreen].
- *
- * Temporary UI model — lives in the screen package until Week 4/5.
- * In Week 4 it is populated from nav args passed from [CategoryScreen].
- * In Week 6 it is replaced by the domain Quiz model from the Open Trivia API.
- *
- * Wiki — data models reference:
- * https://github.com/your-username/trivia-sparks/wiki/App-Trivia-Sparks#data-models
- */
-data class QuizDetail(
-    val id: Int,             // Quiz ID — passed as nav arg in Week 4
-    val title: String,       // e.g. "Quantum Physics Fun"
-    val category: String,    // Uppercase label, e.g. "SCIENCE & NATURE"
-    val questionCount: Int,  // Total questions available
-    val xpReward: Int,       // XP awarded on completion
-    val description: String, // "About this quiz" body text
-    val difficulty: String   // "Easy" | "Medium" | "Hard" — default selected chip
-)
-
-private val sampleQuizDetail = QuizDetail(
-    id            = 1,
-    title         = "Quantum Physics Fun",
-    category      = "SCIENCE & NATURE",
-    questionCount = 15,
-    xpReward      = 250,
-    description   = "Dive into the fascinating world of quantum mechanics! " +
-            "Explore particles, waves, and the mysteries of the " +
-            "subatomic world in this playful challenge.",
-    difficulty    = "Easy"
-)
-
-// ─────────────────────────────────────────────────────────────────────────────
-// QUIZ DETAIL SCREEN
-// ─────────────────────────────────────────────────────────────────────────────
 
 /**
  * Pre-game detail screen — shows quiz metadata and lets the player pick a difficulty.
@@ -127,10 +76,10 @@ private val sampleQuizDetail = QuizDetail(
  * | `onPlayWithFriends` | empty lambda | Week 11 — Multiplayer lobby |
  *
  * Figma design:
- * https://www.figma.com/file/your-figma-link/Trivia-Sparks?node-id=quiz-detail-screen
+ * https://www.figma.com/design/JLQCo8SrXd27RnUmIhQ4CS/Trivia-Sparks-Game?node-id=35-1773&t=Tqzagesq6ztbVvp0-1
  *
  * Wiki — Week 2 QuizDetailScreen section:
- * https://github.com/your-username/trivia-sparks/wiki/Week-2#quizdetailscreen
+ * https://github.com/ISEL-LEIM-DAM-SV2526/61N/wiki/02-%E2%80%90-Jetpack-Compose-%E2%80%90-Compose-Fundamentals#quizdetailscreen
  *
  * @param quiz                Quiz data to display.
  * @param selectedDifficulty  Currently selected difficulty chip label.
@@ -163,7 +112,7 @@ fun QuizDetailScreen(
                 onBack   = onBack,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(QuizDetailDefaults.heroHeight)
+                    .height(ComponentSize.detailHeroHeight)
             )
 
             // ── Detail card — slides up over the hero by heroCardOverlap ───
@@ -172,7 +121,7 @@ fun QuizDetailScreen(
                 selectedDifficulty = selectedDifficulty,
                 modifier           = Modifier
                     .weight(1f)
-                    .offset(y = -QuizDetailDefaults.heroCardOverlap)
+                    .offset(y = -ComponentSize.detailHeroCardOverlap)
             )
 
             // ── Action buttons — always visible below the card ─────────────
@@ -198,9 +147,6 @@ fun QuizDetailScreen(
  * The back arrow is a ghost [IconButton] overlay anchored to [Alignment.TopStart]
  * inside a [Box]. The semi-transparent surface background keeps it readable
  * over any illustration colour.
- *
- * Figma: https://www.figma.com/file/your-figma-link/Trivia-Sparks?node-id=quiz-detail-hero
- *
  * @param onBack    Called when the user taps the back arrow.
  *                  TODO(Week 4): `NavController.popBackStack()`.
  * @param modifier  Applied to the outermost [Box] — caller sets width and height.
@@ -228,7 +174,7 @@ private fun QuizDetailHero(
                     color = MaterialTheme.colorScheme.surface.copy(alpha = 0.80f),
                     shape = RoundedCornerShape(50)
                 )
-                .size(QuizDetailDefaults.backButtonSize)
+                .size(ComponentSize.backButtonSize)
         ) {
             Icon(
                 painter            = painterResource(R.drawable.ic_close),
@@ -313,8 +259,6 @@ private fun QuizDetailCard(
  *
  * - Question count: transparent fill + `outline` border — neutral, informational.
  * - XP reward: `secondary` at 15% fill + 50% border — warm, signals reward.
- *
- * Figma: https://www.figma.com/file/your-figma-link/Trivia-Sparks?node-id=quiz-info-pills
  *
  * @param questionCount  Number of questions in the quiz.
  * @param xpReward       XP awarded on completion.
@@ -404,12 +348,6 @@ private fun QuizAboutSection(
  * Tapping does nothing this week.
  * TODO(Week 3): `onClick` becomes `{ selectedDifficulty = option.label }` with
  * `mutableStateOf` hoisted to [QuizDetailScreen].
- *
- * Figma: https://www.figma.com/file/your-figma-link/Trivia-Sparks?node-id=quiz-detail-difficulty
- *
- * Wiki — difficulty chips:
- * https://github.com/your-username/trivia-sparks/wiki/Week-2#difficulty-chips--three-values-per-chip
- *
  * @param selectedDifficulty  Label of the highlighted chip — "Easy", "Medium", or "Hard".
  *                            TODO(Week 3): driven by `mutableStateOf` in parent screen.
  * @param modifier            Applied to the outermost [Column] element.
@@ -459,12 +397,6 @@ private fun QuizDifficultySection(
  *
  * Different emphasis levels — see the Wiki link below.
  * Both buttons share equal width via [Modifier.weight(1f)].
- *
- * Figma: https://www.figma.com/file/your-figma-link/Trivia-Sparks?node-id=quiz-detail-buttons
- *
- * Wiki — button emphasis explained:
- * https://github.com/your-username/trivia-sparks/wiki/Week-2#quizdetailscreen
- *
  * @param onPlaySolo          Called when the user taps "Play Solo".
  *                            TODO(Week 4): navigate to `QuizScreen` with difficulty arg.
  * @param onPlayWithFriends   Called when the user taps "Play with Friends".

@@ -9,7 +9,7 @@ import androidx.compose.ui.graphics.Color
  * populated from the Open Trivia Database API.
  *
  * Wiki — data models reference:
- * https://github.com/your-username/trivia-sparks/wiki/App-Trivia-Sparks#data-models
+ * https://github.com/ISEL-LEIM-DAM-SV2526/61N/wiki/00-%E2%80%90-TriviaSparks-Game#data-models
  */
 data class Category(
     val id: Int,              // Open Trivia Database category ID (9–32)

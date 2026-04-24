@@ -45,10 +45,6 @@ import pt.isel.dam.sv2526.triviasparks.ui.theme.TriviaSparksTheme
 import pt.isel.dam.sv2526.triviasparks.ui.theme.Violet800
 import pt.isel.dam.sv2526.triviasparks.ui.theme.triviasparks
 
-// ─────────────────────────────────────────────────────────────────────────────
-// CATEGORY SCREEN
-// ─────────────────────────────────────────────────────────────────────────────
-
 /**
  * Quiz Setup screen — the player selects a difficulty and a category before starting.
  *
@@ -67,10 +63,10 @@ import pt.isel.dam.sv2526.triviasparks.ui.theme.triviasparks
  * | `onStartQuiz` | empty lambda | Week 4 — navigate to `QuizScreen` with args |
  *
  * Figma design:
- * https://www.figma.com/file/your-figma-link/Trivia-Sparks?node-id=category-screen
+ * https://www.figma.com/design/JLQCo8SrXd27RnUmIhQ4CS/Trivia-Sparks-Game?node-id=35-1773&t=Tqzagesq6ztbVvp0-1
  *
  * Wiki — Week 2 CategoryScreen section:
- * https://github.com/your-username/trivia-sparks/wiki/Week-2#categoryscreen
+ * https://github.com/ISEL-LEIM-DAM-SV2526/61N/wiki/02-%E2%80%90-Jetpack-Compose-%E2%80%90-Compose-Fundamentals#categoryscreen
  *
  * @param categories          List of categories to display.
  * @param selectedDifficulty  Currently selected difficulty label.
@@ -193,8 +189,6 @@ fun CategoryScreen(
  * The icon itself uses [IconSize.xxs] (13dp) to keep the X visually small
  * relative to the title — matching the Figma design.
  *
- * Figma: https://www.figma.com/file/your-figma-link/Trivia-Sparks?node-id=category-top-bar
- *
  * @param onClose   Called when the user taps the X button.
  *                  TODO(Week 4): `NavController.popBackStack()`.
  * @param modifier  Applied to the outermost [Row] element.
@@ -251,10 +245,6 @@ private fun CategoryTopBar(
  * This week [selectedDifficulty] is a hardcoded parameter — chips render their
  * selected/unselected state correctly but tapping does nothing.
  * TODO(Week 3): hoisted `mutableStateOf("Easy")` here and `onClick` connected.
- *
- * Wiki — difficulty chip colour rules:
- * https://github.com/your-username/trivia-sparks/wiki/Week-2#difficulty-chips--three-values-per-chip
- *
  * @param selectedDifficulty  Label of the currently active chip — "Easy", "Medium", or "Hard".
  * @param modifier            Applied to the outermost [Column] element.
  */
@@ -389,9 +379,6 @@ private fun CategorySearchBar(
  * Uses [Violet800] (`#3C3489`) instead of `colorScheme.primary` (`#8B7FE8`).
  * The deeper violet creates stronger contrast against the `background` token —
  * signalling this is the final committed action on the screen.
- *
- * Figma: https://www.figma.com/file/your-figma-link/Trivia-Sparks?node-id=start-quiz-button
- *
  * @param onClick   Called when the user taps the button.
  *                  TODO(Week 4): navigate to `QuizScreen` with selected category ID and difficulty.
  * @param modifier  Applied to the outermost [Button] element.

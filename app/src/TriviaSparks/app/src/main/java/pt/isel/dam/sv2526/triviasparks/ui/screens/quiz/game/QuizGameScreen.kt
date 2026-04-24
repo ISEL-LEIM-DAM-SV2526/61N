@@ -46,19 +46,6 @@ import pt.isel.dam.sv2526.triviasparks.ui.theme.ComponentSize
 import pt.isel.dam.sv2526.triviasparks.ui.theme.Spacing
 import pt.isel.dam.sv2526.triviasparks.ui.theme.TriviaSparksTheme
 
-// ─────────────────────────────────────────────────────────────────────────────
-// SCREEN-LEVEL CONSTANTS
-// ─────────────────────────────────────────────────────────────────────────────
-
-private object QuizDefaults {
-    val pillIconSize = 14.dp  // small icons inside the close pill and score pill
-    // intentionally smaller than IconSize.xxs (13dp) to fit pill padding
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// QUIZ SCREEN
-// ─────────────────────────────────────────────────────────────────────────────
-
 /**
  * Active quiz screen — one question at a time, countdown timer, four answer
  * options, and a running score.
@@ -86,10 +73,10 @@ private object QuizDefaults {
  * | `onNextQuestion` | empty lambda | Week 5 — `QuizViewModel.nextQuestion()` |
  *
  * Figma design:
- * https://www.figma.com/file/your-figma-link/Trivia-Sparks?node-id=quiz-screen
+ * https://www.figma.com/design/JLQCo8SrXd27RnUmIhQ4CS/Trivia-Sparks-Game?node-id=35-1773&t=Tqzagesq6ztbVvp0-1
  *
  * Wiki — Week 2 QuizScreen section:
- * https://github.com/your-username/trivia-sparks/wiki/Week-2#quizscreen
+ * https://github.com/ISEL-LEIM-DAM-SV2526/61N/wiki/02-%E2%80%90-Jetpack-Compose-%E2%80%90-Compose-Fundamentals#quizscreen
  *
  * @param timeLeft          Seconds remaining on the countdown. Range: 0–[totalTime].
  * @param totalTime         Total seconds per question. Defaults to 30.
@@ -189,8 +176,6 @@ fun QuizScreen(
  * Implemented as a plain [Row] — no [androidx.compose.material3.TopAppBar] because
  * the pill-based layout doesn't fit the standard slot structure.
  *
- * Figma: https://www.figma.com/file/your-figma-link/Trivia-Sparks?node-id=quiz-top-bar
- *
  * @param quizLevel   Level label inside the close pill, e.g. "Quiz Level 01".
  * @param quizTitle   Quiz title shown centred between the two pills.
  * @param score       Current score shown in the right pill.
@@ -224,7 +209,7 @@ private fun QuizTopBar(
                 painter            = painterResource(R.drawable.ic_close),
                 contentDescription = "Close quiz",
                 tint               = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier           = Modifier.size(QuizDefaults.pillIconSize)
+                modifier           = Modifier.size(ComponentSize.pillIconSize)
             )
             Text(
                 text  = quizLevel,
@@ -259,7 +244,7 @@ private fun QuizTopBar(
                 painter            = painterResource(R.drawable.ic_animals),
                 contentDescription = null,
                 tint               = Color.White,
-                modifier           = Modifier.size(QuizDefaults.pillIconSize)
+                modifier           = Modifier.size(ComponentSize.pillIconSize)
             )
             Text(
                 text       = "$score",

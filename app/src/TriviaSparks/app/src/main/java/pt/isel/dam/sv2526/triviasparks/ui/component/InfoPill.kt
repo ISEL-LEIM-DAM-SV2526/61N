@@ -74,10 +74,10 @@ import pt.isel.dam.sv2526.triviasparks.ui.theme.TriviaSparksTheme
  *
  * Marked `internal` — only accessible within this module.
  *
- * Figma: https://www.figma.com/file/your-figma-link/Trivia-Sparks?node-id=info-pill
+ * Figma: https://www.figma.com/design/JLQCo8SrXd27RnUmIhQ4CS/Trivia-Sparks-Game?node-id=35-1773&t=Tqzagesq6ztbVvp0-1
  *
- * Wiki — InfoPill usage and colour decisions:
- * https://github.com/your-username/trivia-sparks/wiki/Week-2#stat-pills--two-different-tints
+ * Wiki
+ * https://github.com/ISEL-LEIM-DAM-SV2526/61N/wiki/02-%E2%80%90-Jetpack-Compose-%E2%80%90-Compose-Fundamentals#shared-components-created-this-week
  *
  * @param iconRes    Drawable resource ID for the leading icon.
  * @param iconTint   Tint colour applied to the icon. Provided by the caller.

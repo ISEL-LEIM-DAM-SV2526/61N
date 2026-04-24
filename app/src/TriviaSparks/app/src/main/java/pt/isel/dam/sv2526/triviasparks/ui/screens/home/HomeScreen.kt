@@ -74,10 +74,10 @@ import pt.isel.dam.sv2526.triviasparks.ui.theme.TriviaSparksTheme
  * | Start Quiz tap | empty lambda | Week 4 — `NavController.navigate(Routes.CATEGORY)` |
  *
  * Figma design:
- * https://www.figma.com/design/JLQCo8SrXd27RnUmIhQ4CS/Trivia-Sparks-Game?node-id=35-1773
+ * https://www.figma.com/design/JLQCo8SrXd27RnUmIhQ4CS/Trivia-Sparks-Game?node-id=35-1773&t=Tqzagesq6ztbVvp0-1
  *
  * Wiki — HomeScreen section:
- * https://github.com/your-username/trivia-sparks/wiki/Week-2#homescreen
+ * https://github.com/ISEL-LEIM-DAM-SV2526/61N/wiki/02-%E2%80%90-Jetpack-Compose-%E2%80%90-Compose-Fundamentals#homescreen
  *
  * @param userName              Display name shown in the greeting.
  * @param totalScore            Formatted score string, e.g. "2,450".
@@ -219,12 +219,7 @@ fun HomeScreen(
  *
  * The notification bell sits on a [CircleShape] `surfaceVariant` background —
  * gives it a subtle tappable area without a visible border.
- *
- * Figma: https://www.figma.com/design/JLQCo8SrXd27RnUmIhQ4CS/Trivia-Sparks-Game?node-id=home-top-bar
- *
- * Wiki — custom top bar vs TopAppBar:
- * https://github.com/your-username/trivia-sparks/wiki/Week-2#homescreen
- *
+
  * @param userAvatarRes         Drawable resource ID for the user's avatar.
  *                              TODO(Week 8): replaced with Coil [AsyncImage] loading from Firebase URL.
  * @param onNotificationClick   Called when the user taps the notification bell.
@@ -328,11 +323,6 @@ private fun HomeGreeting(
  *
  * The two pills use different tints intentionally — see the Wiki link below.
  *
- * Figma: https://www.figma.com/design/JLQCo8SrXd27RnUmIhQ4CS/Trivia-Sparks-Game?node-id=stat-pills
- *
- * Wiki — why two different tints:
- * https://github.com/your-username/trivia-sparks/wiki/Week-2#stat-pills--two-different-tints
- *
  * @param score     Formatted score string, e.g. "2,450".
  *                  TODO(Week 9): comes from Firestore `users/{uid}.totalScore`.
  * @param rank      Formatted rank string, e.g. "#12".
@@ -377,8 +367,6 @@ private fun HomeStatRow(
  *
  * Uses `colorScheme.primary` fill and [ButtonShape] (16dp).
  * Rocket icon sits to the right of the label inside the button content slot.
- *
- * Figma: https://www.figma.com/design/JLQCo8SrXd27RnUmIhQ4CS/Trivia-Sparks-Game?node-id=start-quiz-button
  *
  * @param onClick   Called when the user taps the button.
  *                  TODO(Week 4): navigates to `CategoryScreen` via `NavController`.

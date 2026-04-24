@@ -85,10 +85,10 @@ private const val STARS_TWO = 50  // score % threshold for 2 stars
  * | `onShare` | empty lambda | Week 8 — Android `ShareCompat` intent |
  *
  * Figma design:
- * https://www.figma.com/file/your-figma-link/Trivia-Sparks?node-id=results-screen
+ * https://www.figma.com/design/JLQCo8SrXd27RnUmIhQ4CS/Trivia-Sparks-Game?node-id=35-1773&t=Tqzagesq6ztbVvp0-1
  *
  * Wiki — ResultsScreen section:
- * https://github.com/your-username/trivia-sparks/wiki/Week-2#resultsscreen
+ * https://github.com/ISEL-LEIM-DAM-SV2526/61N/wiki/02-%E2%80%90-Jetpack-Compose-%E2%80%90-Compose-Fundamentals#resultsscreen
  *
  * @param summary    Quiz score summary for the hero section.
  * @param questions  Ordered list of question review entries.

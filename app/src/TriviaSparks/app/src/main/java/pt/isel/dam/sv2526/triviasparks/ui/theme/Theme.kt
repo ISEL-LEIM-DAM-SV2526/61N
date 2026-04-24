@@ -50,13 +50,10 @@ import androidx.compose.ui.graphics.Color
  * ```
  *
  * Wiki — full theme documentation:
- * https://github.com/your-username/trivia-sparks/wiki/App-Trivia-Sparks#design-system--triviasparkstheme
- *
- * Wiki — how the theme is applied to each screen:
- * https://github.com/your-username/trivia-sparks/wiki/Week-2#theme--how-dreamscape-is-applied-this-week
+ * https://github.com/ISEL-LEIM-DAM-SV2526/61N/wiki/00-%E2%80%90-TriviaSparks-Game#design-system--triviasparks
  *
  * Figma — design system reference:
- * https://www.figma.com/file/your-figma-link/Trivia-Sparks?node-id=design-system
+ * https://www.figma.com/design/JLQCo8SrXd27RnUmIhQ4CS/Trivia-Sparks-Game?node-id=35-1773&t=Tqzagesq6ztbVvp0-1
  */
 
 // ─────────────────────────────────────────────────────────────────────────────
