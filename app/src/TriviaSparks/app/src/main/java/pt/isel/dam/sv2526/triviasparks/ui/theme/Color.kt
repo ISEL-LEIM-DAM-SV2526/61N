@@ -161,11 +161,6 @@ val DarkLilacBorderSubtle = Color(0xFF2A2750) // dividers within cards (dark mod
 // Accessed via MaterialTheme.triviasparks.category* extended tokens.
 // Do not reference these directly in composables — always go through the theme.
 //
-// Wiki — category icon container pattern:
-// https://github.com/your-username/trivia-sparks/wiki/Week-2#category-icon-containers
-//
-// Figma — category colour reference:
-// https://www.figma.com/file/your-figma-link/Trivia-Sparks?node-id=category-colours
 // ─────────────────────────────────────────────────────────────────────────────
 
 val CategoryScience    = Color(0xFF4A90D9) // blue

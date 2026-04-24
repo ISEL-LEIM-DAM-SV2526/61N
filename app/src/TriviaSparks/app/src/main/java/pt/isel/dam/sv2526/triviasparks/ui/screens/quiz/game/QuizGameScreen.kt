@@ -421,8 +421,6 @@ private fun QuestionCounter(
  * TODO(Week 5): disabled (`enabled = false`) until `selectedAnswer != null` —
  * prevents skipping questions without answering.
  *
- * Figma: https://www.figma.com/file/your-figma-link/Trivia-Sparks?node-id=next-question-button
- *
  * @param onClick   Called when the user taps the button.
  *                  TODO(Week 5): `QuizViewModel.nextQuestion()`.
  * @param modifier  Applied to the outermost [Button] element.

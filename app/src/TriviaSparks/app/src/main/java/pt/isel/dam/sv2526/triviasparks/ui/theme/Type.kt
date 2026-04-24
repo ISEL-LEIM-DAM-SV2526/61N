@@ -90,8 +90,6 @@ val TriviaSparksFont = NunitoFamily
 //   labelMedium    → Chip labels, bottom nav labels, score badges
 //   labelSmall     → UPPERCASE section headings — "DIFFICULTY", "CATEGORIES"
 //
-// Wiki — which style goes where on each screen:
-// https://github.com/your-username/trivia-sparks/wiki/Week-2#typography-applied-to-screens
 // ─────────────────────────────────────────────────────────────────────────────
 
 val TriviaSparksTypography = Typography(

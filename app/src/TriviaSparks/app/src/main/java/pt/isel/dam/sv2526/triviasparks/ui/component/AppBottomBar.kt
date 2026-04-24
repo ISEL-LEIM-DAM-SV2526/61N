@@ -53,8 +53,6 @@ import pt.isel.dam.sv2526.triviasparks.ui.theme.TriviaSparksTheme
  *
  * Figma: https://www.figma.com/design/JLQCo8SrXd27RnUmIhQ4CS/Trivia-Sparks-Game?node-id=35-1773&t=Tqzagesq6ztbVvp0-1
  *
- * Wiki — bottom navigation and Week 4 wiring:
- * https://github.com/your-username/trivia-sparks/wiki/Week-3-4#bottom-navigation
  *
  * @param selectedRoute   Route string of the currently active tab, e.g. `Routes.HOME`.
  * @param onNavSelected   Called when the user taps a tab. Receives the tab's route string.

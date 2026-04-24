@@ -167,8 +167,6 @@ fun ResultsScreen(
  * Uses a plain [Row] instead of [androidx.compose.material3.TopAppBar] because
  * the share icon on the right doesn't fit the standard navigation structure.
  *
- * Figma: https://www.figma.com/file/your-figma-link/Trivia-Sparks?node-id=results-top-bar
- *
  * @param onClose   Called when the user taps the X button.
  *                  TODO(Week 4): `NavController.popBackStack()`.
  * @param onShare   Called when the user taps the share icon.
@@ -238,9 +236,6 @@ private fun ResultsTopBar(
  * - ≥ [ResultsDefaults.twoStars]% → 2 stars
  * - < [ResultsDefaults.twoStars]% → 1 star
  * Filled stars use [SunnyYellow]. Empty stars use white at 40% opacity.
- *
- * Figma: https://www.figma.com/file/your-figma-link/Trivia-Sparks?node-id=results-hero
- *
  * @param summary   Score summary — drives the number, percentage, and star count.
  * @param modifier  Applied to the outermost [Box] — caller sets width and height.
  */
@@ -464,9 +459,6 @@ private fun ResultsStatsRow(
  *
  * The leading badge is a circle with a check (correct) or X (wrong).
  *
- * Wiki — question review explained:
- * https://github.com/your-username/trivia-sparks/wiki/Week-2#resultsscreen
- *
  * @param question  The question review data.
  * @param modifier  Applied to the outermost [Row] element.
  */
@@ -557,8 +549,6 @@ private fun QuestionReviewItem(
  *
  * Uses [Violet800] (`#3C3489`) — same deep CTA pattern as [CategoryScreen]
  * and [QuizDetailScreen]. Signals the final committed action on the screen.
- *
- * Figma: https://www.figma.com/file/your-figma-link/Trivia-Sparks?node-id=try-again-button
  *
  * @param onClick   Called when the user taps the button.
  *                  TODO(Week 4): navigate back to `QuizScreen` with same category + difficulty.

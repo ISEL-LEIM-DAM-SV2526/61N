@@ -190,8 +190,6 @@ private val DarkColorScheme = darkColorScheme(
 // into the composable tree via CompositionLocal and read anywhere through
 // MaterialTheme.triviasparks.
 //
-// Wiki — extended vs standard colour tokens:
-// https://github.com/your-username/trivia-sparks/wiki/App-Trivia-Sparks#colours
 // ─────────────────────────────────────────────────────────────────────────────
 
 /**
@@ -202,10 +200,7 @@ private val DarkColorScheme = darkColorScheme(
  * colours, and game feedback colours.
  *
  * Do not instantiate directly — access via [MaterialTheme.triviasparks].
- *
- * Wiki — when to use extended vs colorScheme tokens:
- * https://github.com/your-username/trivia-sparks/wiki/Week-2#theme--how-TriviaSparksTheme-is-applied-this-week
- */
+*/
 data class TriviaSparksThemeExtendedColors(
 
     // ── Difficulty ────────────────────────────────────────────────────────

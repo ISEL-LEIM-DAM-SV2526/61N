@@ -67,9 +67,6 @@ val TriviaSparksShapes = Shapes(
 //
 // Prefer the named shape objects below (CardShape, ChipShape, etc.) — they
 // already wrap these values in a RoundedCornerShape, keeping composables cleaner.
-//
-// Wiki — when to use raw tokens vs named shapes:
-// https://github.com/your-username/trivia-sparks/wiki/00-project-setup#shape-tokens
 // ─────────────────────────────────────────────────────────────────────────────
 
 object TriviaSparksRadius {
@@ -94,9 +91,6 @@ object TriviaSparksRadius {
 //   Modifier.background(color = iconTint.copy(0.15f), shape = IconBoxShape)
 //   Card(shape = CardShape)
 //   OutlinedTextField(shape = SearchBarShape)
-//
-// Wiki — shape usage in screens:
-// https://github.com/your-username/trivia-sparks/wiki/Week-2#shapes
 // ─────────────────────────────────────────────────────────────────────────────
 
 val CardShape      = RoundedCornerShape(TriviaSparksRadius.Card)       // 24dp — game tile cards
@@ -117,8 +111,6 @@ val AvatarShape    = RoundedCornerShape(TriviaSparksRadius.Avatar)     // circle
  * Top corners: [TriviaSparksRadius.Dialog] (20dp)
  * Bottom corners: 0dp — flush with the screen edge
  *
- * Wiki — QuizDetailScreen bottom sheet panel:
- * https://github.com/your-username/trivia-sparks/wiki/Week-2#quizdetailscreen
  */
 val BottomSheetShape = RoundedCornerShape(
     topStart    = TriviaSparksRadius.Dialog,

@@ -105,8 +105,6 @@ object Elevation {
 //   Icon(modifier = Modifier.size(IconSize.md))   // toolbar icon
 //   Icon(modifier = Modifier.size(IconSize.sm))   // inside a button
 //
-// Wiki — icon size usage by screen:
-// https://github.com/your-username/trivia-sparks/wiki/Week-2#components-used-this-week
 // ─────────────────────────────────────────────────────────────────────────────
 
 object IconSize {
