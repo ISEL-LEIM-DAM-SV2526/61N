@@ -26,6 +26,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,6 +40,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.delay
 import pt.isel.dam.sv2526.triviasparks.R
 import pt.isel.dam.sv2526.triviasparks.ui.component.AnimatedTimerRing
 import pt.isel.dam.sv2526.triviasparks.ui.component.AnswerOptionCard
@@ -53,67 +60,113 @@ import pt.isel.dam.sv2526.triviasparks.ui.theme.TriviaSparksTheme
  * Layout pattern: [Scaffold] → [Column] → [QuizTopBar] + [QuizCard] (`weight(1f)`)
  * + [NextQuestionButton]. The card fills all space between the top bar and the button.
  *
- * **Animation infrastructure — built in Week 2, fires in Week 3:**
- * [AnimatedTimerRing] and [AnswerOptionCard] contain all `animate*AsState` calls.
- * They fire automatically when [timeLeft] decrements and [selectedAnswer] changes.
- * No modifications to this file are needed in Week 3.
+ * **Answer selection behaviour:**
+ * The player can tap and switch between answer options freely while the timer
+ * is running. Answers become locked — and the result highlighted — only when:
+ * 1. The countdown timer reaches zero, **or**
+ * 2. The player taps "Next Question"
  *
- * **What is static this week and when it becomes live:**
+ * This requires two separate state values:
+ * - [selectedAnswer] — the currently highlighted option. Updates on every tap.
+ * - `isAnswerLocked` — owned locally, becomes `true` at lock time. Passed as
+ *   `hasAnswered` to [AnswerOptionCard] to trigger the correct/wrong highlight.
  *
- * | Element | Static value | Becomes live |
+ * **State summary:**
+ * ```
+ * selectedAnswer = null       → no option highlighted
+ * selectedAnswer = "B"        → option B highlighted, others visible — STILL SWITCHABLE
+ * isAnswerLocked = true       → result revealed, all options disabled
+ * ```
+ *
+ * **Why `LaunchedEffect(key1 = questionNumber)` and not `Timer`:**
+ * [LaunchedEffect] runs inside a coroutine on the main thread — safe to touch
+ * Compose state. [delay] suspends without blocking. `key1 = questionNumber`
+ * restarts the effect when the question changes, resetting all state automatically.
+ * A `Timer` runs on a background thread and crashes when touching Compose state.
+ *
+ * **What is still static and when it becomes live:**
+ *
+ * | Element | Current state | Becomes live |
  * |---|---|---|
- * | `timeLeft` | `12` hardcoded | Week 3 — `LaunchedEffect` ticking every second |
- * | `selectedAnswer` | `"B"` hardcoded | Week 3 — `mutableStateOf<String?>(null)` |
- * | `correctAnswer` | `"B"` hardcoded | Week 4 — from nav args / `Question` model |
+ * | `correctAnswer` | hardcoded `"B"` | Week 4 — from nav args |
  * | `questionText` | hardcoded string | Week 4 — from nav args |
  * | `answers` | `sampleAnswers` mock | Week 4 — from nav args |
- * | `score` | `240` hardcoded | Week 5 — `QuizViewModel.uiState` |
  * | `questionNumber` / `totalQuestions` | `3` / `10` hardcoded | Week 5 — `QuizViewModel` |
- * | `onClose` | empty lambda | Week 4 — `NavController.popBackStack()` |
+ * | Score display | `correctCount × 100` locally | Week 5 — `QuizViewModel.uiState.score` |
  * | `onNextQuestion` | empty lambda | Week 5 — `QuizViewModel.nextQuestion()` |
+ * | `onClose` | empty lambda | Week 4 — `NavController.popBackStack()` |
  *
  * Figma design:
- * https://www.figma.com/design/JLQCo8SrXd27RnUmIhQ4CS/Trivia-Sparks-Game?node-id=35-1773&t=Tqzagesq6ztbVvp0-1
+ * https://www.figma.com/design/JLQCo8SrXd27RnUmIhQ4CS/Trivia-Sparks-Game?node-id=35-1773
  *
- * Wiki — Week 2 QuizScreen section:
- * https://github.com/ISEL-LEIM-DAM-SV2526/61N/wiki/02-%E2%80%90-Jetpack-Compose-%E2%80%90-Compose-Fundamentals#quizscreen
+ * Wiki — Week 3 QuizScreen state:
+ * https://github.com/ISEL-LEIM-DAM-SV2526/61N/wiki/03-04-%E2%80%90-State-%E2%80%90-Navigation#quizscreen--timer--answer-selection
  *
- * @param timeLeft          Seconds remaining on the countdown. Range: 0–[totalTime].
  * @param totalTime         Total seconds per question. Defaults to 30.
  * @param questionNumber    1-based index of the current question.
+ *                          TODO(Week 5): `QuizViewModel.currentIndex + 1`.
  * @param totalQuestions    Total questions in the session.
- * @param questionText      The question text. HTML-decoded before reaching this screen.
+ *                          TODO(Week 5): `QuizViewModel.questions.size`.
+ * @param questionText      The question text. HTML-decoded before this screen.
+ *                          TODO(Week 4): from nav args, `Question.text`.
  * @param answers           Four answer options in display order (A, B, C, D).
- * @param selectedAnswer    Letter the user tapped, or null if not yet answered.
- *                          TODO(Week 3): becomes `mutableStateOf<String?>(null)` here.
+ *                          TODO(Week 4): from nav args, `Question.answers`.
  * @param correctAnswer     Letter of the correct answer.
- *                          TODO(Week 4): comes from the [Question] domain model via nav args.
- * @param score             Running score shown in the top bar.
- *                          TODO(Week 5): comes from `QuizViewModel.uiState`.
+ *                          TODO(Week 4): from nav args, `Question.correctAnswer`.
  * @param quizLevel         Level label in the close pill, e.g. "Quiz Level 01".
  * @param quizTitle         Quiz title shown centred in the top bar.
  * @param onClose           Called when the user taps the close pill.
  *                          TODO(Week 4): `NavController.popBackStack()`.
- * @param onNextQuestion    Called when the user taps Next Question.
+ * @param onNextQuestion    Called when the player taps Next Question.
  *                          TODO(Week 5): `QuizViewModel.nextQuestion()`.
  */
 @Composable
 fun QuizScreen(
-    timeLeft: Int               = 12,           // TODO(Week 3): LaunchedEffect ticking every second
     totalTime: Int              = 30,
     questionNumber: Int         = 3,            // TODO(Week 5): QuizViewModel.currentIndex + 1
     totalQuestions: Int         = 10,           // TODO(Week 5): QuizViewModel.questions.size
     questionText: String        = "Which nebula is often called the \u201cNursery of Stars\u201d?",
     // TODO(Week 4): from nav args, Question.text
-    answers: List<AnswerOption> = sampleAnswers,// TODO(Week 4): from nav args, Question answers
-    selectedAnswer: String?     = "B",          // TODO(Week 3): mutableStateOf<String?>(null)
+    answers: List<AnswerOption> = sampleAnswers,// TODO(Week 4): from nav args, Question.answers
     correctAnswer: String       = "B",          // TODO(Week 4): from nav args, Question.correctAnswer
-    score: Int                  = 240,          // TODO(Week 5): QuizViewModel.uiState.score
     quizLevel: String           = "Quiz Level 01",
     quizTitle: String           = "Quantum Physics Fun",
     onClose: () -> Unit         = {},           // TODO(Week 4): NavController.popBackStack()
     onNextQuestion: () -> Unit  = {}            // TODO(Week 5): QuizViewModel.nextQuestion()
 ) {
+    // ── Week 3 state ───────────────────────────────────────────────────────
+
+    // The currently highlighted answer — updates freely while the timer runs.
+    var selectedAnswer  by remember { mutableStateOf<String?>(null) }
+
+    // True when the answer is locked in — either by timer expiry or Next Question tap.
+    // Passed as hasAnswered to AnswerOptionCard to trigger the correct/wrong highlight.
+    var isAnswerLocked  by remember { mutableStateOf(false) }
+
+    var timeLeft        by remember { mutableIntStateOf(totalTime) }
+
+    // Local score tracking until Week 5 connects QuizViewModel.
+    // correctCount increments only once per question — at lock time.
+    var correctCount    by remember { mutableIntStateOf(0) }
+    val currentScore     = correctCount * 100   // TODO(Week 5): QuizViewModel.uiState.score
+
+    // ── Countdown timer ────────────────────────────────────────────────────
+    // Restarts whenever questionNumber changes — resets all per-question state.
+    LaunchedEffect(key1 = questionNumber) {
+        timeLeft       = totalTime
+        selectedAnswer = null
+        isAnswerLocked = false
+        while (timeLeft > 0) {
+            delay(1000L)   // suspend 1 second — never blocks the main thread
+            timeLeft--
+        }
+        // Timer reached zero — lock the current answer and reveal the result.
+        // correctCount is incremented here so it's counted exactly once per question.
+        // TODO(Week 5): this logic moves to QuizViewModel
+        isAnswerLocked = true
+        if (selectedAnswer == correctAnswer) correctCount++
+    }
+
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background
     ) { innerPadding ->
@@ -126,7 +179,7 @@ fun QuizScreen(
             QuizTopBar(
                 quizLevel = quizLevel,
                 quizTitle = quizTitle,
-                score     = score,
+                score     = currentScore,
                 onClose   = onClose,
                 modifier  = Modifier.padding(
                     horizontal = Spacing.screenEdge,
@@ -136,22 +189,38 @@ fun QuizScreen(
 
             // ── Main card — fills all remaining space ──────────────────────
             QuizCard(
-                modifier       = Modifier
+                modifier         = Modifier
                     .weight(1f)
                     .padding(horizontal = Spacing.screenEdge),
-                timeLeft       = timeLeft,
-                totalTime      = totalTime,
-                questionNumber = questionNumber,
-                totalQuestions = totalQuestions,
-                questionText   = questionText,
-                answers        = answers,
-                selectedAnswer = selectedAnswer,
-                correctAnswer  = correctAnswer
+                timeLeft         = timeLeft,
+                totalTime        = totalTime,
+                questionNumber   = questionNumber,
+                totalQuestions   = totalQuestions,
+                questionText     = questionText,
+                answers          = answers,
+                selectedAnswer   = selectedAnswer,
+                correctAnswer    = correctAnswer,
+                isAnswerLocked   = isAnswerLocked,
+                onAnswerSelected = { letter ->
+                    // Allow switching answers freely while the timer is running.
+                    // Once isAnswerLocked is true, taps are ignored.
+                    if (!isAnswerLocked) selectedAnswer = letter
+                }
             )
 
             // ── Next Question — pinned below the card ──────────────────────
             NextQuestionButton(
-                onClick  = onNextQuestion,
+                enabled  = selectedAnswer != null,   // must select something before advancing
+                // TODO(Week 5): enabled driven by QuizViewModel
+                onClick  = {
+                    // Lock the answer on tap — increment only if not already locked
+                    // (timer may have locked it just before the tap)
+                    if (!isAnswerLocked) {
+                        isAnswerLocked = true
+                        if (selectedAnswer == correctAnswer) correctCount++
+                    }
+                    onNextQuestion()
+                },
                 modifier = Modifier.padding(
                     horizontal = Spacing.screenEdge,
                     vertical   = Spacing.xl
@@ -169,16 +238,16 @@ fun QuizScreen(
  * Custom top bar for the Quiz screen.
  *
  * Three elements in a [Row]:
- * 1. Close pill (left) — "× [quizLevel]" tappable chip to exit the quiz.
- * 2. Quiz title (centre) — `weight(1f)` fills remaining space, `maxLines = 2` wraps long names.
- * 3. Score pill (right) — coin icon + score on a `secondary` (coral) background.
+ * 1. Close pill (left) — "× [quizLevel]" tappable chip to exit.
+ * 2. Quiz title (centre) — `weight(1f)` fills remaining space, `maxLines = 2`.
+ * 3. Score pill (right) — coin icon + score on `secondary` (coral) background.
  *
- * Implemented as a plain [Row] — no [androidx.compose.material3.TopAppBar] because
- * the pill-based layout doesn't fit the standard slot structure.
+ * Plain [Row] — no [androidx.compose.material3.TopAppBar] because the pill
+ * layout doesn't fit the standard slot structure.
  *
  * @param quizLevel   Level label inside the close pill, e.g. "Quiz Level 01".
  * @param quizTitle   Quiz title shown centred between the two pills.
- * @param score       Current score shown in the right pill.
+ * @param score       Current score value.
  *                    TODO(Week 5): comes from `QuizViewModel.uiState.score`.
  * @param onClose     Called when the user taps the close pill.
  *                    TODO(Week 4): `NavController.popBackStack()`.
@@ -196,7 +265,6 @@ private fun QuizTopBar(
         modifier          = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Close pill — surface background, tappable
         Row(
             modifier = Modifier
                 .background(color = MaterialTheme.colorScheme.surface, shape = ChipShape)
@@ -218,7 +286,6 @@ private fun QuizTopBar(
             )
         }
 
-        // Quiz title — weight(1f) + TextAlign.Center — centres between two fixed pills
         Text(
             text       = quizTitle,
             style      = MaterialTheme.typography.titleMedium,
@@ -231,7 +298,6 @@ private fun QuizTopBar(
                 .padding(horizontal = Spacing.sm)
         )
 
-        // Score pill — coral background (secondary), white text
         Row(
             modifier = Modifier
                 .background(color = MaterialTheme.colorScheme.secondary, shape = ChipShape)
@@ -261,25 +327,25 @@ private fun QuizTopBar(
 // ─────────────────────────────────────────────────────────────────────────────
 
 /**
- * White card containing the timer ring, question counter, question text,
- * and four answer option cards.
+ * White card containing the timer, question counter, question text, and
+ * four [AnswerOptionCard]s.
  *
- * Fills all available vertical space between the top bar and the Next Question
- * button. Content is scrollable to handle long questions on small screens.
- *
- * [AnimatedTimerRing] and [AnswerOptionCard] are imported from `ui/components/` —
- * their animations are already built and will fire as soon as [timeLeft] and
- * [selectedAnswer] connect to real state in Week 3.
+ * **State flows down, events flow up:**
+ * - [selectedAnswer] and [isAnswerLocked] flow down to each [AnswerOptionCard].
+ * - [onAnswerSelected] flows up — the guard (`!isAnswerLocked`) lives in
+ *   [QuizScreen.onAnswerSelected], not here. State decisions belong in the owner.
  *
  * @param timeLeft          Seconds remaining — drives [AnimatedTimerRing].
- * @param totalTime         Total seconds per question — computes progress ratio.
- * @param questionNumber    1-based current question index.
+ * @param totalTime         Total seconds — computes the progress ratio.
+ * @param questionNumber    1-based question index.
  * @param totalQuestions    Total questions in the session.
- * @param questionText      The question text to display.
+ * @param questionText      The question text.
  * @param answers           Four answer options.
- * @param selectedAnswer    Letter the user tapped, or null.
+ * @param selectedAnswer    Currently highlighted letter, or null if nothing selected.
  * @param correctAnswer     Letter of the correct answer.
- * @param modifier          Applied to the outermost [Card] element.
+ * @param isAnswerLocked    True when the answer is locked — triggers highlight.
+ * @param onAnswerSelected  Called with the tapped letter. Guard lives in [QuizScreen].
+ * @param modifier          Applied to the outermost [Card].
  */
 @Composable
 private fun QuizCard(
@@ -291,6 +357,8 @@ private fun QuizCard(
     answers: List<AnswerOption>,
     selectedAnswer: String?,
     correctAnswer: String,
+    isAnswerLocked: Boolean,
+    onAnswerSelected: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -308,19 +376,10 @@ private fun QuizCard(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(Spacing.xl)
         ) {
-            // Animated countdown ring — all four animations built, fires in Week 3
-            AnimatedTimerRing(
-                timeLeft  = timeLeft,
-                totalTime = totalTime
-            )
+            AnimatedTimerRing(timeLeft = timeLeft, totalTime = totalTime)
 
-            // "QUESTION 3 • 10" counter
-            QuestionCounter(
-                current = questionNumber,
-                total   = totalQuestions
-            )
+            QuestionCounter(current = questionNumber, total = totalQuestions)
 
-            // Question text
             Text(
                 text       = questionText,
                 style      = MaterialTheme.typography.titleLarge,
@@ -332,7 +391,6 @@ private fun QuizCard(
 
             Spacer(modifier = Modifier.height(Spacing.xs))
 
-            // Answer option cards — animations built, connect state in Week 3
             Column(
                 modifier            = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(Spacing.md)
@@ -342,8 +400,10 @@ private fun QuizCard(
                         answer      = answer,
                         isSelected  = answer.letter == selectedAnswer,
                         isCorrect   = answer.letter == correctAnswer,
-                        hasAnswered = selectedAnswer != null,
-                        onClick     = { /* TODO(Week 3): selectedAnswer = answer.letter */ }
+                        // hasAnswered drives the lock highlight — only true when locked,
+                        // not on every selection. This is what allows answer switching.
+                        hasAnswered = isAnswerLocked,
+                        onClick     = { onAnswerSelected(answer.letter) }
                     )
                 }
             }
@@ -356,16 +416,14 @@ private fun QuizCard(
 // ─────────────────────────────────────────────────────────────────────────────
 
 /**
- * Displays the question position as "QUESTION [current] • [total]".
+ * Displays "QUESTION [current] • [total]".
  *
- * [current] is shown in [MaterialTheme.colorScheme.primary] to visually distinguish
- * it from the muted total — the active question number is the important one.
+ * [current] uses `colorScheme.primary` to visually distinguish the active
+ * question number from the muted total.
  *
  * @param current   1-based index of the current question.
- *                  TODO(Week 5): comes from `QuizViewModel.currentIndex + 1`.
  * @param total     Total questions in the session.
- *                  TODO(Week 5): comes from `QuizViewModel.questions.size`.
- * @param modifier  Applied to the outermost [Row] element.
+ * @param modifier  Applied to the outermost [Row].
  */
 @Composable
 private fun QuestionCounter(
@@ -378,30 +436,18 @@ private fun QuestionCounter(
         verticalAlignment     = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
-        Text(
-            text  = "QUESTION",
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
+        Text("QUESTION", style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant)
         Spacer(Modifier.width(Spacing.sm))
-        Text(
-            text       = "$current",
-            style      = MaterialTheme.typography.labelSmall,
+        Text("$current", style = MaterialTheme.typography.labelSmall,
             fontWeight = FontWeight.Bold,
-            color      = MaterialTheme.colorScheme.primary   // active number — highlighted
-        )
+            color = MaterialTheme.colorScheme.primary)
         Spacer(Modifier.width(Spacing.sm))
-        Text(
-            text  = "•",
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
+        Text("•", style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant)
         Spacer(Modifier.width(Spacing.sm))
-        Text(
-            text  = "$total",
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
+        Text("$total", style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
 
@@ -412,33 +458,37 @@ private fun QuestionCounter(
 /**
  * Full-width button to advance to the next question.
  *
- * Sits outside the quiz card on the `background` surface — visually separate
- * from the card content and the answer options.
+ * Disabled when no answer is selected — the player must tap an option before
+ * they can advance. This prevents skipping questions entirely.
  *
- * Uses `surface` fill with `primary` text — low emphasis that doesn't compete
- * with the answer options above it.
+ * Low-emphasis style (`surface` fill, `primary` text) — does not compete
+ * visually with the answer options.
  *
- * TODO(Week 5): disabled (`enabled = false`) until `selectedAnswer != null` —
- * prevents skipping questions without answering.
+ * TODO(Week 5): [enabled] driven by `QuizViewModel` — also needs to handle
+ * the last question case (navigates to ResultsScreen instead of next question).
  *
- * @param onClick   Called when the user taps the button.
- *                  TODO(Week 5): `QuizViewModel.nextQuestion()`.
- * @param modifier  Applied to the outermost [Button] element.
+ * @param enabled   True when an answer is selected. False otherwise.
+ * @param onClick   Called when tapped. Locks the answer before advancing.
+ * @param modifier  Applied to the outermost [Button].
  */
 @Composable
 private fun NextQuestionButton(
+    enabled: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Button(
         onClick  = onClick,
+        enabled  = enabled,
         modifier = modifier
             .fillMaxWidth()
-            .height(ComponentSize.buttonHeightLarge),  // 56dp
+            .height(ComponentSize.buttonHeightLarge),
         shape  = ButtonShape,
         colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.surface,
-            contentColor   = MaterialTheme.colorScheme.primary
+            containerColor         = MaterialTheme.colorScheme.surface,
+            contentColor           = MaterialTheme.colorScheme.primary,
+            disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+            disabledContentColor   = MaterialTheme.colorScheme.onSurfaceVariant
         ),
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
     ) {
@@ -454,67 +504,47 @@ private fun NextQuestionButton(
 // PREVIEWS
 // ─────────────────────────────────────────────────────────────────────────────
 
-@Preview(showBackground = true, name = "QuizScreen — light, answer selected")
+@Preview(showBackground = true, name = "QuizScreen — light")
 @Composable
 private fun QuizScreenLightPreview() {
-    TriviaSparksTheme(darkTheme = false) {
-        QuizScreen()
-    }
+    TriviaSparksTheme(darkTheme = false) { QuizScreen() }
 }
 
-@Preview(
-    showBackground = true,
-    name           = "QuizScreen — dark, answer selected",
-    uiMode         = Configuration.UI_MODE_NIGHT_YES
-)
+@Preview(showBackground = true, name = "QuizScreen — dark",
+    uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun QuizScreenDarkPreview() {
-    TriviaSparksTheme(darkTheme = true) {
-        QuizScreen()
-    }
+    TriviaSparksTheme(darkTheme = true) { QuizScreen() }
 }
 
-@Preview(showBackground = true, name = "QuizScreen — no answer yet")
+@Preview(showBackground = true, name = "Timer — safe (coral, >50%)")
 @Composable
-private fun QuizScreenNoAnswerPreview() {
+private fun TimerSafePreview() {
     TriviaSparksTheme(darkTheme = false) {
-        QuizScreen(selectedAnswer = null)
-    }
-}
-
-@Preview(showBackground = true, name = "QuizScreen — critical time (≤ 6s)")
-@Composable
-private fun QuizScreenCriticalTimePreview() {
-    TriviaSparksTheme(darkTheme = false) {
-        QuizScreen(timeLeft = 5, selectedAnswer = null)
-    }
-}
-
-@Preview(showBackground = true, name = "QuizScreen — safe timer (coral)")
-@Composable
-private fun QuizScreenSafeTimerPreview() {
-    TriviaSparksTheme(darkTheme = false) {
-        Box(
-            modifier         = Modifier
-                .size(140.dp)
-                .background(MaterialTheme.colorScheme.surface),
-            contentAlignment = Alignment.Center
-        ) {
+        Box(Modifier.size(140.dp).background(MaterialTheme.colorScheme.surface),
+            contentAlignment = Alignment.Center) {
             AnimatedTimerRing(timeLeft = 22, totalTime = 30)
         }
     }
 }
 
-@Preview(showBackground = true, name = "QuizScreen — critical timer (red)")
+@Preview(showBackground = true, name = "Timer — warning (yellow, 20–50%)")
 @Composable
-private fun QuizScreenCriticalTimerPreview() {
+private fun TimerWarningPreview() {
     TriviaSparksTheme(darkTheme = false) {
-        Box(
-            modifier         = Modifier
-                .size(140.dp)
-                .background(MaterialTheme.colorScheme.surface),
-            contentAlignment = Alignment.Center
-        ) {
+        Box(Modifier.size(140.dp).background(MaterialTheme.colorScheme.surface),
+            contentAlignment = Alignment.Center) {
+            AnimatedTimerRing(timeLeft = 9, totalTime = 30)
+        }
+    }
+}
+
+@Preview(showBackground = true, name = "Timer — critical (red, ≤20%)")
+@Composable
+private fun TimerCriticalPreview() {
+    TriviaSparksTheme(darkTheme = false) {
+        Box(Modifier.size(140.dp).background(MaterialTheme.colorScheme.surface),
+            contentAlignment = Alignment.Center) {
             AnimatedTimerRing(timeLeft = 4, totalTime = 30)
         }
     }
