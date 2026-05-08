@@ -9,6 +9,7 @@ import pt.isel.dam.sv2526.triviasparks.ui.model.QuestionReview
 import pt.isel.dam.sv2526.triviasparks.ui.model.QuizDetail
 import pt.isel.dam.sv2526.triviasparks.ui.model.QuizItem
 import pt.isel.dam.sv2526.triviasparks.ui.model.QuizResultSummary
+import pt.isel.dam.sv2526.triviasparks.ui.navigation.Routes
 
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -58,25 +59,25 @@ val sampleQuizItems = listOf(
 
 val bottomNavItems = listOf(
     BottomNavItem(
-        route = "home",
+        route = Routes.HOME,
         label = "HOME",
         iconSelectedRes = R.drawable.ic_home_seleted,
         iconUnselectedRes = R.drawable.ic_home_seleted
     ),
     BottomNavItem(
-        route             = "quiz",
+        route             = Routes.QUIZS,
         label             = "QUIZ",
         iconSelectedRes   = R.drawable.ic_quiz_unselected,
         iconUnselectedRes = R.drawable.ic_quiz_unselected
     ),
     BottomNavItem(
-        route             = "leaderboards",
+        route             = Routes.LEADERBOARD,
         label             = "LEADERBOARDS",
         iconSelectedRes   = R.drawable.ic_leadboard_unselected,
         iconUnselectedRes = R.drawable.ic_leadboard_unselected
     ),
     BottomNavItem(
-        route = "profile",
+        route = Routes.PROFILE,
         label = "PROFILE",
         iconSelectedRes = R.drawable.ic_profile_unselected,
         iconUnselectedRes = R.drawable.ic_profile_unselected
