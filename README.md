@@ -1,4 +1,4 @@
-# DAM 2525 — Desenvolvimento de Aplicações Móveis - LEIM61N Class
+# DAM 2425 — Desenvolvimento de Aplicações Móveis - LEIM61N Class
 
 > Android development with Jetpack Compose — building a real production-quality app from the ground up across 12 weeks.
 
