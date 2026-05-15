@@ -36,14 +36,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import pt.isel.dam.sv2526.triviasparks.R
 import pt.isel.dam.sv2526.triviasparks.ui.model.Friend
-import pt.isel.dam.sv2526.triviasparks.ui.model.QuizItem
+import pt.isel.dam.sv2526.triviasparks.ui.preview.sampleQuizItems
+import pt.isel.dam.sv2526.triviasparks.ui.preview.sampleFriends
 import pt.isel.dam.sv2526.triviasparks.ui.component.AppBottomBar
 import pt.isel.dam.sv2526.triviasparks.ui.component.AvatarCard
 import pt.isel.dam.sv2526.triviasparks.ui.component.InfoPill
 import pt.isel.dam.sv2526.triviasparks.ui.component.ListItemCard
 import pt.isel.dam.sv2526.triviasparks.ui.component.SectionHeader
-import pt.isel.dam.sv2526.triviasparks.ui.preview.sampleFriends
-import pt.isel.dam.sv2526.triviasparks.ui.preview.sampleQuizItems
 import pt.isel.dam.sv2526.triviasparks.ui.theme.AvatarShape
 import pt.isel.dam.sv2526.triviasparks.ui.theme.ButtonShape
 import pt.isel.dam.sv2526.triviasparks.ui.theme.ComponentSize
@@ -74,11 +73,13 @@ import pt.isel.dam.sv2526.triviasparks.ui.theme.TriviaSparksTheme
  * | Start Quiz tap | empty lambda | Week 4 — `NavController.navigate(Routes.CATEGORY)` |
  *
  * Figma design:
- * https://www.figma.com/design/JLQCo8SrXd27RnUmIhQ4CS/Trivia-Sparks-Game?node-id=35-1773&t=Tqzagesq6ztbVvp0-1
+ * https://www.figma.com/design/JLQCo8SrXd27RnUmIhQ4CS/Trivia-Sparks-Game?node-id=35-1773
  *
  * Wiki — HomeScreen section:
- * https://github.com/ISEL-LEIM-DAM-SV2526/61N/wiki/02-%E2%80%90-Jetpack-Compose-%E2%80%90-Compose-Fundamentals#homescreen
+ * https://github.com/your-username/trivia-sparks/wiki/Week-2#homescreen
  *
+ * @param selectedRoute         Route string of the currently active tab.
+ *                              Driven by `NavController.currentBackStackEntryAsState()` in [AppNavGraph].
  * @param userName              Display name shown in the greeting.
  * @param totalScore            Formatted score string, e.g. "2,450".
  * @param rank                  Formatted rank string, e.g. "#12".
@@ -93,11 +94,11 @@ import pt.isel.dam.sv2526.triviasparks.ui.theme.TriviaSparksTheme
  */
 @Composable
 fun HomeScreen(
+    selectedRoute: String           = "home",      // driven by NavController in AppNavGraph
     userName: String                = "Alex",       // TODO(Week 8): Firebase Auth currentUser.displayName
     totalScore: String              = "2,450",      // TODO(Week 9): Firestore user.totalScore
     rank: String                    = "#12",        // TODO(Week 9): Firestore leaderboard rank
     friends: List<Friend>           = sampleFriends,// TODO(Week 9): Firestore friends collection
-    quizItems: List<QuizItem>       = sampleQuizItems, // TODO(Week 9): Firestore quizzes collection
     onStartQuiz: () -> Unit         = {},           // TODO(Week 4): navigate to CategoryScreen
     onSeeAllFriends: () -> Unit     = {},           // TODO(Week 4): navigate to friends list screen
     onSeeAllQuizzes: () -> Unit     = {},           // TODO(Week 4): navigate to quizzes list screen
@@ -109,7 +110,7 @@ fun HomeScreen(
         containerColor = MaterialTheme.colorScheme.background,
         bottomBar = {
             AppBottomBar(
-                selectedRoute = "home",             // TODO(Week 4): driven by NavController currentRoute
+                selectedRoute = selectedRoute,
                 onNavSelected = onNavSelected
             )
         }
@@ -190,7 +191,7 @@ fun HomeScreen(
             }
 
             // TODO(Week 6): replace mock quizItems with Open Trivia Database API data
-            items(quizItems) { quiz ->
+            items(sampleQuizItems) { quiz ->
                 ListItemCard(
                     title    = quiz.title,
                     subtitle = quiz.subtitle,
@@ -219,7 +220,12 @@ fun HomeScreen(
  *
  * The notification bell sits on a [CircleShape] `surfaceVariant` background —
  * gives it a subtle tappable area without a visible border.
-
+ *
+ * Figma: https://www.figma.com/design/JLQCo8SrXd27RnUmIhQ4CS/Trivia-Sparks-Game?node-id=home-top-bar
+ *
+ * Wiki — custom top bar vs TopAppBar:
+ * https://github.com/your-username/trivia-sparks/wiki/Week-2#homescreen
+ *
  * @param userAvatarRes         Drawable resource ID for the user's avatar.
  *                              TODO(Week 8): replaced with Coil [AsyncImage] loading from Firebase URL.
  * @param onNotificationClick   Called when the user taps the notification bell.
@@ -323,6 +329,11 @@ private fun HomeGreeting(
  *
  * The two pills use different tints intentionally — see the Wiki link below.
  *
+ * Figma: https://www.figma.com/design/JLQCo8SrXd27RnUmIhQ4CS/Trivia-Sparks-Game?node-id=stat-pills
+ *
+ * Wiki — why two different tints:
+ * https://github.com/your-username/trivia-sparks/wiki/Week-2#stat-pills--two-different-tints
+ *
  * @param score     Formatted score string, e.g. "2,450".
  *                  TODO(Week 9): comes from Firestore `users/{uid}.totalScore`.
  * @param rank      Formatted rank string, e.g. "#12".
@@ -367,6 +378,8 @@ private fun HomeStatRow(
  *
  * Uses `colorScheme.primary` fill and [ButtonShape] (16dp).
  * Rocket icon sits to the right of the label inside the button content slot.
+ *
+ * Figma: https://www.figma.com/design/JLQCo8SrXd27RnUmIhQ4CS/Trivia-Sparks-Game?node-id=start-quiz-button
  *
  * @param onClick   Called when the user taps the button.
  *                  TODO(Week 4): navigates to `CategoryScreen` via `NavController`.

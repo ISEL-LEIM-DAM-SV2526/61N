@@ -30,6 +30,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -42,8 +46,6 @@ import pt.isel.dam.sv2526.triviasparks.R
 import pt.isel.dam.sv2526.triviasparks.ui.model.DifficultyOption
 import pt.isel.dam.sv2526.triviasparks.ui.component.DifficultyChip
 import pt.isel.dam.sv2526.triviasparks.ui.component.InfoPill
-import pt.isel.dam.sv2526.triviasparks.ui.model.QuizDetail
-import pt.isel.dam.sv2526.triviasparks.ui.preview.sampleQuizDetail
 import pt.isel.dam.sv2526.triviasparks.ui.theme.BottomSheetShape
 import pt.isel.dam.sv2526.triviasparks.ui.theme.ButtonShape
 import pt.isel.dam.sv2526.triviasparks.ui.theme.ChipShape
@@ -54,51 +56,94 @@ import pt.isel.dam.sv2526.triviasparks.ui.theme.TriviaSparksTheme
 import pt.isel.dam.sv2526.triviasparks.ui.theme.Violet800
 import pt.isel.dam.sv2526.triviasparks.ui.theme.triviasparks
 
+// ─────────────────────────────────────────────────────────────────────────────
+// SCREEN-LEVEL CONSTANTS
+// ─────────────────────────────────────────────────────────────────────────────
+
+private object QuizDetailDefaults {
+    val heroHeight      = 240.dp
+    val heroCardOverlap = 20.dp
+    val backButtonSize  = 40.dp
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// DATA MODEL — temporary until Week 4 nav args
+// ─────────────────────────────────────────────────────────────────────────────
+
+data class QuizDetail(
+    val id: Int,
+    val title: String,
+    val category: String,
+    val questionCount: Int,
+    val xpReward: Int,
+    val description: String,
+    val difficulty: String
+)
+
+private val sampleQuizDetail = QuizDetail(
+    id            = 1,
+    title         = "Quantum Physics Fun",
+    category      = "SCIENCE & NATURE",
+    questionCount = 15,
+    xpReward      = 250,
+    description   = "Dive into the fascinating world of quantum mechanics! " +
+            "Explore particles, waves, and the mysteries of the " +
+            "subatomic world in this playful challenge.",
+    difficulty    = "Easy"
+)
+
 /**
- * Pre-game detail screen — shows quiz metadata and lets the player pick a difficulty.
+ * Pre-game detail screen — quiz info and difficulty selector.
  *
- * Layout pattern:
- * ```
- * Scaffold → Column →
- *   QuizDetailHero    (fixed heroHeight, full bleed illustration)
- *   QuizDetailCard    (weight 1f, scrollable, overlaps hero by heroCardOverlap)
- *   QuizDetailButtons (pinned below the card, always visible)
- * ```
+ * **Week 3 — state now live:**
+ * `selectedDifficulty` is now `remember { mutableStateOf(quiz.difficulty) }`.
+ * The player can switch chips before tapping Play Solo.
  *
- * **What is static this week and when it becomes live:**
+ * **`remember(quiz.id)`:**
+ * The key `quiz.id` ensures `selectedDifficulty` resets to `quiz.difficulty`
+ * if a different quiz is shown — without it, the state would persist from
+ * the previous quiz.
  *
- * | Element | Static value | Becomes live |
+ * **`onPlaySolo` now receives the difficulty:**
+ * In Week 4 the NavGraph calls `Routes.quiz(categoryId, selectedDifficulty)`
+ * using the value passed here. The screen doesn't need to know about routes —
+ * it just reports what the player chose.
+ *
+ * **What is still static and when it becomes live:**
+ *
+ * | Element | Current state | Becomes live |
  * |---|---|---|
- * | `quiz` data | `sampleQuizDetail` | Week 4 — `NavController` arguments |
- * | `selectedDifficulty` | `quiz.difficulty` | Week 3 — `mutableStateOf` hoisted here |
+ * | `quiz` data | `sampleQuizDetail` | Week 4 — nav args |
  * | `onBack` | empty lambda | Week 4 — `NavController.popBackStack()` |
  * | `onPlaySolo` | empty lambda | Week 4 — navigate to `QuizScreen` |
- * | `onPlayWithFriends` | empty lambda | Week 11 — Multiplayer lobby |
+ * | `onPlayWithFriends` | empty lambda | Week 11 — Multiplayer |
  *
  * Figma design:
- * https://www.figma.com/design/JLQCo8SrXd27RnUmIhQ4CS/Trivia-Sparks-Game?node-id=35-1773&t=Tqzagesq6ztbVvp0-1
+ * https://www.figma.com/file/your-figma-link/Trivia-Sparks?node-id=quiz-detail-screen
  *
- * Wiki — Week 2 QuizDetailScreen section:
- * https://github.com/ISEL-LEIM-DAM-SV2526/61N/wiki/02-%E2%80%90-Jetpack-Compose-%E2%80%90-Compose-Fundamentals#quizdetailscreen
+ * Wiki — Week 3 QuizDetailScreen state:
+ * https://github.com/your-username/trivia-sparks/wiki/Week-3-4#quizdetailscreen--difficulty-selection
  *
- * @param quiz                Quiz data to display.
- * @param selectedDifficulty  Currently selected difficulty chip label.
- *                            TODO(Week 3): becomes `remember { mutableStateOf(quiz.difficulty) }` here.
+ * @param quiz                Quiz data. TODO(Week 4): from nav args.
  * @param onBack              Called when the user taps the back arrow.
  *                            TODO(Week 4): `NavController.popBackStack()`.
- * @param onPlaySolo          Called when the user taps "Play Solo".
- *                            TODO(Week 4): navigate to `QuizScreen` with difficulty arg.
- * @param onPlayWithFriends   Called when the user taps "Play with Friends".
+ * @param onPlaySolo          Called with the selected difficulty when the user taps Play Solo.
+ *                            TODO(Week 4): `navController.navigate(Routes.quiz(id, difficulty))`.
+ * @param onPlayWithFriends   Called when the user taps Play with Friends.
  *                            TODO(Week 11): navigate to Multiplayer lobby.
  */
 @Composable
 fun QuizDetailScreen(
-    quiz: QuizDetail              = sampleQuizDetail,
-    selectedDifficulty: String    = quiz.difficulty,    // TODO(Week 3): mutableStateOf hoisted here
-    onBack: () -> Unit            = {},                 // TODO(Week 4): NavController.popBackStack()
-    onPlaySolo: () -> Unit        = {},                 // TODO(Week 4): navigate to QuizScreen
-    onPlayWithFriends: () -> Unit = {}                  // TODO(Week 11): navigate to Multiplayer lobby
+    quiz: QuizDetail                          = sampleQuizDetail,  // TODO(Week 4): nav args
+    onBack: () -> Unit                        = {},                 // TODO(Week 4): popBackStack()
+    onPlaySolo: (difficulty: String) -> Unit  = {},                 // TODO(Week 4): navigate to QuizScreen
+    onPlayWithFriends: () -> Unit             = {}                  // TODO(Week 11): Multiplayer
 ) {
+    // ── Week 3 state ───────────────────────────────────────────────────────
+    // remember(quiz.id) — resets to quiz.difficulty if a different quiz is shown.
+    // Without the key, the state would persist from the previous quiz.
+    var selectedDifficulty by remember(quiz.id) { mutableStateOf(quiz.difficulty) }
+
     Scaffold(
         containerColor = MaterialTheme.colorScheme.surface
     ) { innerPadding ->
@@ -107,28 +152,26 @@ fun QuizDetailScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            // ── Hero illustration ──────────────────────────────────────────
             QuizDetailHero(
                 onBack   = onBack,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(ComponentSize.detailHeroHeight)
+                    .height(QuizDetailDefaults.heroHeight)
             )
 
-            // ── Detail card — slides up over the hero by heroCardOverlap ───
             QuizDetailCard(
                 quiz               = quiz,
                 selectedDifficulty = selectedDifficulty,
+                onDifficultySelected = { selectedDifficulty = it },
                 modifier           = Modifier
                     .weight(1f)
-                    .offset(y = -ComponentSize.detailHeroCardOverlap)
+                    .offset(y = -QuizDetailDefaults.heroCardOverlap)
             )
 
-            // ── Action buttons — always visible below the card ─────────────
             QuizDetailButtons(
-                onPlaySolo        = onPlaySolo,
-                onPlayWithFriends = onPlayWithFriends,
-                modifier          = Modifier.padding(
+                onPlaySolo          = { onPlaySolo(selectedDifficulty) },
+                onPlayWithFriends   = onPlayWithFriends,
+                modifier            = Modifier.padding(
                     horizontal = Spacing.screenEdge,
                     vertical   = Spacing.xl
                 )
@@ -138,18 +181,14 @@ fun QuizDetailScreen(
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// HERO SECTION
+// HERO
 // ─────────────────────────────────────────────────────────────────────────────
 
 /**
- * Full-bleed illustrated hero at the top of the screen.
+ * Full-bleed illustrated hero. Back arrow as a ghost overlay.
  *
- * The back arrow is a ghost [IconButton] overlay anchored to [Alignment.TopStart]
- * inside a [Box]. The semi-transparent surface background keeps it readable
- * over any illustration colour.
  * @param onBack    Called when the user taps the back arrow.
- *                  TODO(Week 4): `NavController.popBackStack()`.
- * @param modifier  Applied to the outermost [Box] — caller sets width and height.
+ * @param modifier  Caller sets width and height.
  */
 @Composable
 private fun QuizDetailHero(
@@ -163,8 +202,6 @@ private fun QuizDetailHero(
             contentScale       = ContentScale.Crop,
             modifier           = Modifier.fillMaxSize()
         )
-
-        // Ghost back button — 80% surface background keeps it readable over illustration
         IconButton(
             onClick  = onBack,
             modifier = Modifier
@@ -174,7 +211,7 @@ private fun QuizDetailHero(
                     color = MaterialTheme.colorScheme.surface.copy(alpha = 0.80f),
                     shape = RoundedCornerShape(50)
                 )
-                .size(ComponentSize.backButtonSize)
+                .size(QuizDetailDefaults.backButtonSize)
         ) {
             Icon(
                 painter            = painterResource(R.drawable.ic_close),
@@ -191,20 +228,22 @@ private fun QuizDetailHero(
 // ─────────────────────────────────────────────────────────────────────────────
 
 /**
- * White scrollable card panel containing all quiz metadata.
+ * White scrollable card panel with quiz metadata.
  *
- * Uses [BottomSheetShape] (top 20dp corners, 0dp bottom) to create the visual
- * overlap with the hero illustration. The caller applies a negative y-offset
- * of [QuizDetailDefaults.heroCardOverlap] to achieve this effect.
+ * [onDifficultySelected] is passed down through the card to [QuizDifficultySection]
+ * — this is state hoisting in action. The card does not own state, it just
+ * passes events upward to [QuizDetailScreen].
  *
- * @param quiz                Quiz data to display.
- * @param selectedDifficulty  Currently selected difficulty label — drives chip highlight.
- * @param modifier            Applied to the outermost [Surface] element.
+ * @param quiz                  Quiz data to display.
+ * @param selectedDifficulty    Currently selected chip label.
+ * @param onDifficultySelected  Called when the player taps a chip.
+ * @param modifier              Applied to the outermost [Surface].
  */
 @Composable
 private fun QuizDetailCard(
     quiz: QuizDetail,
     selectedDifficulty: String,
+    onDifficultySelected: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Surface(
@@ -220,32 +259,23 @@ private fun QuizDetailCard(
                 .padding(top = Spacing.xxl, bottom = Spacing.md),
             verticalArrangement = Arrangement.spacedBy(Spacing.lg)
         ) {
-            // Category label — uppercase, primary colour
             Text(
                 text  = quiz.category,
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.primary
             )
-
-            // Quiz title
             Text(
                 text       = quiz.title,
                 style      = MaterialTheme.typography.headlineLarge,
                 fontWeight = FontWeight.Bold,
                 color      = MaterialTheme.colorScheme.onSurface
             )
-
-            // Question count + XP reward pills
-            QuizInfoPills(
-                questionCount = quiz.questionCount,
-                xpReward      = quiz.xpReward
-            )
-
-            // About section
+            QuizInfoPills(questionCount = quiz.questionCount, xpReward = quiz.xpReward)
             QuizAboutSection(description = quiz.description)
-
-            // Difficulty selector — selectedDifficulty flows all the way here
-            QuizDifficultySection(selectedDifficulty = selectedDifficulty)
+            QuizDifficultySection(
+                selectedDifficulty   = selectedDifficulty,
+                onDifficultySelected = onDifficultySelected
+            )
         }
     }
 }
@@ -254,16 +284,6 @@ private fun QuizDetailCard(
 // INFO PILLS
 // ─────────────────────────────────────────────────────────────────────────────
 
-/**
- * Row of two [InfoPill]s: question count (outline) and XP reward (coral tint).
- *
- * - Question count: transparent fill + `outline` border — neutral, informational.
- * - XP reward: `secondary` at 15% fill + 50% border — warm, signals reward.
- *
- * @param questionCount  Number of questions in the quiz.
- * @param xpReward       XP awarded on completion.
- * @param modifier       Applied to the outermost [Row] element.
- */
 @Composable
 private fun QuizInfoPills(
     questionCount: Int,
@@ -275,7 +295,6 @@ private fun QuizInfoPills(
         horizontalArrangement = Arrangement.spacedBy(Spacing.sm),
         verticalAlignment     = Alignment.CenterVertically
     ) {
-        // Question count — outline style, neutral visual weight
         InfoPill(
             iconRes   = R.drawable.ic_questions,
             iconTint  = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -283,17 +302,13 @@ private fun QuizInfoPills(
             pillColor = Color.Transparent,
             modifier  = Modifier.border(1.dp, MaterialTheme.colorScheme.outline, ChipShape)
         )
-
-        // XP reward — coral tint, signals reward value
         InfoPill(
             iconRes   = R.drawable.ic_star_fill,
             iconTint  = MaterialTheme.colorScheme.secondary,
             label     = "$xpReward XP",
             pillColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.15f),
             modifier  = Modifier.border(
-                width = 1.dp,
-                color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f),
-                shape = ChipShape
+                1.dp, MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f), ChipShape
             )
         )
     }
@@ -303,14 +318,6 @@ private fun QuizInfoPills(
 // ABOUT SECTION
 // ─────────────────────────────────────────────────────────────────────────────
 
-/**
- * "ABOUT THIS QUIZ" uppercase label and body description.
- *
- * Relaxed `lineHeight` (1.6× the font size) for comfortable multi-line reading.
- *
- * @param description  The quiz description text.
- * @param modifier     Applied to the outermost [Column] element.
- */
 @Composable
 private fun QuizAboutSection(
     description: String,
@@ -339,22 +346,19 @@ private fun QuizAboutSection(
 // ─────────────────────────────────────────────────────────────────────────────
 
 /**
- * "DIFFICULTY" label and three [DifficultyChip]s in a horizontal [Row].
+ * "DIFFICULTY" label and three [DifficultyChip]s.
  *
- * All three difficulties are always shown. [selectedDifficulty] determines
- * which chip is highlighted. Chips wrap their content — no `weight(1f)` —
- * giving a compact pill style suited to the detail screen's limited vertical space.
+ * Stateless — receives [selectedDifficulty] and reports taps via [onDifficultySelected].
+ * The state lives in [QuizDetailScreen].
  *
- * Tapping does nothing this week.
- * TODO(Week 3): `onClick` becomes `{ selectedDifficulty = option.label }` with
- * `mutableStateOf` hoisted to [QuizDetailScreen].
- * @param selectedDifficulty  Label of the highlighted chip — "Easy", "Medium", or "Hard".
- *                            TODO(Week 3): driven by `mutableStateOf` in parent screen.
- * @param modifier            Applied to the outermost [Column] element.
+ * @param selectedDifficulty    Currently active chip label.
+ * @param onDifficultySelected  Called when the player taps a chip.
+ * @param modifier              Applied to the outermost [Column].
  */
 @Composable
 private fun QuizDifficultySection(
     selectedDifficulty: String,
+    onDifficultySelected: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val ext = MaterialTheme.triviasparks
@@ -374,14 +378,12 @@ private fun QuizDifficultySection(
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
-
         Row(horizontalArrangement = Arrangement.spacedBy(Spacing.sm)) {
             difficultyOptions.forEach { option ->
                 DifficultyChip(
                     option     = option,
                     isSelected = option.label == selectedDifficulty,
-                    onClick    = { /* TODO(Week 3): selectedDifficulty = option.label */ }
-                    // No weight(1f) — chips wrap content, compact pill style
+                    onClick    = { onDifficultySelected(option.label) }
                 )
             }
         }
@@ -393,15 +395,12 @@ private fun QuizDifficultySection(
 // ─────────────────────────────────────────────────────────────────────────────
 
 /**
- * Row of two action buttons — "Play Solo" (outlined) and "Play with Friends" (filled).
+ * Play Solo (outlined) and Play with Friends (filled) buttons.
  *
- * Different emphasis levels — see the Wiki link below.
- * Both buttons share equal width via [Modifier.weight(1f)].
- * @param onPlaySolo          Called when the user taps "Play Solo".
- *                            TODO(Week 4): navigate to `QuizScreen` with difficulty arg.
- * @param onPlayWithFriends   Called when the user taps "Play with Friends".
- *                            TODO(Week 11): navigate to Multiplayer lobby.
- * @param modifier            Applied to the outermost [Row] element.
+ * [onPlaySolo] is called from [QuizDetailScreen] as:
+ * `onPlaySolo = { onPlaySolo(selectedDifficulty) }`
+ * The difficulty is resolved before the lambda is invoked — this composable
+ * doesn't need to know about state.
  */
 @Composable
 private fun QuizDetailButtons(
@@ -413,48 +412,33 @@ private fun QuizDetailButtons(
         modifier              = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(Spacing.md)
     ) {
-        // Play Solo — outlined, lower emphasis
         OutlinedButton(
             onClick  = onPlaySolo,
-            modifier = Modifier
-                .weight(1f)
-                .height(ComponentSize.buttonHeight),   // 52dp
-            shape  = ButtonShape,
-            border = BorderStroke(1.5.dp, MaterialTheme.colorScheme.primary),
-            colors = ButtonDefaults.outlinedButtonColors(
+            modifier = Modifier.weight(1f).height(ComponentSize.buttonHeight),
+            shape    = ButtonShape,
+            border   = BorderStroke(1.5.dp, MaterialTheme.colorScheme.primary),
+            colors   = ButtonDefaults.outlinedButtonColors(
                 contentColor = MaterialTheme.colorScheme.primary
             )
         ) {
-            Text(
-                text       = "Play Solo",
-                style      = MaterialTheme.typography.labelLarge,
-                fontWeight = FontWeight.Bold
-            )
+            Text(text = "Play Solo", style = MaterialTheme.typography.labelLarge,
+                fontWeight = FontWeight.Bold)
         }
 
-        // Play with Friends — filled, highest emphasis, Violet800 deep CTA
         Button(
             onClick  = onPlayWithFriends,
-            modifier = Modifier
-                .weight(1f)
-                .height(ComponentSize.buttonHeight),   // 52dp
-            shape  = ButtonShape,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Violet800,   // deeper than primary — strong CTA
+            modifier = Modifier.weight(1f).height(ComponentSize.buttonHeight),
+            shape    = ButtonShape,
+            colors   = ButtonDefaults.buttonColors(
+                containerColor = Violet800,
                 contentColor   = Color.White
             )
         ) {
-            Icon(
-                painter            = painterResource(R.drawable.ic_multiplayer),
-                contentDescription = null,
-                modifier           = Modifier.size(IconSize.sm)
-            )
-            Spacer(modifier = Modifier.width(Spacing.xs))
-            Text(
-                text       = "Play with Friends",
-                style      = MaterialTheme.typography.labelLarge,
-                fontWeight = FontWeight.Bold
-            )
+            Icon(painterResource(R.drawable.ic_multiplayer), null,
+                modifier = Modifier.size(IconSize.sm))
+            Spacer(Modifier.width(Spacing.xs))
+            Text(text = "Play with Friends", style = MaterialTheme.typography.labelLarge,
+                fontWeight = FontWeight.Bold)
         }
     }
 }
@@ -463,42 +447,24 @@ private fun QuizDetailButtons(
 // PREVIEWS
 // ─────────────────────────────────────────────────────────────────────────────
 
-@Preview(showBackground = true, name = "QuizDetailScreen — light, Easy selected")
+@Preview(showBackground = true, name = "QuizDetail — light, Easy")
 @Composable
-private fun QuizDetailScreenLightPreview() {
-    TriviaSparksTheme(darkTheme = false) {
-        QuizDetailScreen()
-    }
+private fun QuizDetailLightPreview() {
+    TriviaSparksTheme(darkTheme = false) { QuizDetailScreen() }
 }
 
-@Preview(
-    showBackground = true,
-    name           = "QuizDetailScreen — dark, Easy selected",
-    uiMode         = Configuration.UI_MODE_NIGHT_YES
-)
+@Preview(showBackground = true, name = "QuizDetail — dark, Easy",
+    uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-private fun QuizDetailScreenDarkPreview() {
-    TriviaSparksTheme(darkTheme = true) {
-        QuizDetailScreen()
-    }
+private fun QuizDetailDarkPreview() {
+    TriviaSparksTheme(darkTheme = true) { QuizDetailScreen() }
 }
 
-@Preview(showBackground = true, name = "QuizDetailScreen — Hard selected")
+@Preview(showBackground = true, name = "QuizDetail — Hard selected")
 @Composable
-private fun QuizDetailScreenHardPreview() {
+private fun QuizDetailHardPreview() {
     TriviaSparksTheme(darkTheme = false) {
-        QuizDetailScreen(selectedDifficulty = "Hard")
-    }
-}
-
-@Preview(showBackground = true, name = "QuizInfoPills")
-@Composable
-private fun QuizInfoPillsPreview() {
-    TriviaSparksTheme(darkTheme = false) {
-        QuizInfoPills(
-            questionCount = 15,
-            xpReward      = 250,
-            modifier      = Modifier.padding(Spacing.screenEdge)
-        )
+        // Pass a quiz with difficulty = "Hard" to verify the chip pre-selects correctly
+        QuizDetailScreen(quiz = sampleQuizDetail.copy(difficulty = "Hard"))
     }
 }
