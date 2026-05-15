@@ -1,6 +1,6 @@
 # DAM 2425 — Desenvolvimento de Aplicações Móveis - LEIM61N Class
 
-> Android development with Jetpack Compose — building a real production-quality app from the ground up across 12 weeks.
+> Android development with Jetpack Compose — building a real production-quality app from the ground up across X weeks.
 
 ---
 
@@ -43,7 +43,7 @@ Along the way students will be able to:
 The main course project. A real-time multiplayer quiz app - Trivia Sparks. 
 
 → **[app/README.md](./app/README.md)** — setup instructions, architecture overview, and design system  
-→ **[Course Wiki](../../wiki)** — detailed week-by-week guides, KDoc standards, etc
+→ **[Course Wiki](./61N/wiki)** — detailed week-by-week guides, etc
 
 ### `classes/` — Weekly Materials
 
